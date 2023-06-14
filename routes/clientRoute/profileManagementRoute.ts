@@ -1,9 +1,9 @@
 // IMPORT ROUTER
 import express from 'express'
 const router = express.Router()
-import { viewMyProfile, editMyProfile, deleteMyProfile, signOut } from '../../controllers/client/user'
+import { viewMyProfile, editMyProfile, deleteMyProfile, signOut } from '../../controllers/user/profile'
 
-router.route("/:userId")
+router.route("/")
     .get(viewMyProfile)
     .patch(editMyProfile)
     .delete(deleteMyProfile)

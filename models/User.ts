@@ -4,7 +4,11 @@ import validator from 'validator'
 type User = InferSchemaType<typeof Schema>
 
 const userSchema = new Schema<User>({
-  // SIGN UP DATA
+    data: {
+      type: Schema.Types.ObjectId,
+      ref: "KYC",
+      unique: true,
+    },
     email: {
       type: String,
       required: [true, "This field is required"],
@@ -24,46 +28,8 @@ const userSchema = new Schema<User>({
       enum: { values: ['User','Admin'], message: '{VALUE} is not supported' },
       default: 'User'
     },
-  // KYC DATA
-    firstName: {
-      type: String,
-      trim: true
-    },
-    lastName: {
-      type: String,
-      trim: true
-    },
-    phoneNumber: {
-      type: Number,
-      unique: true,
-      minimum: [5, "Phone number is too short"],
-      maximum: [15, "Phone number is too long"]
-    },
-    address: {
-      type: String,
-    },
-    gender: {
-      type: String,
-    },
-    DOB: {
-      type: Date
-    },
-    KycVerified: {
-      type: Boolean,
-      default: false
-    },
-  // AFTER ACCOUNT OPENING
-    referralCode: {
-      type: Number,
-      unique: true,
-      minimum: 6,
-      maximum: 6
-    },
-    referredBy: {
-      type: String
-    },
     OTP: Number,
-    verified: {
+    status: {
         type: Boolean,
         default: false
       }, 

@@ -20,25 +20,21 @@ export const verifyResetEmailAndSendOTP = async ( req: Request, res:Response, em
          
          if(!user) {
             console.log("USER NOT FOUND")
-            return res.send("USER NOT FOUND")
+            return res.status(StatusCodes.NOT_FOUND).send("USER NOT FOUND")
          }
 
-         const OTP = generateOTP()
-         user.OTP = OTP
-         const OTPExpiration = Date.now() + 600000
-        // current time in miliseconds + 10 minutes in miliseconds
+         user.OTP = generateOTP()
          await user.save()
+
          const messageData = {
              from: 'e-Tranzact<jon@gmail.com>',
              to: email,
              subject: 'PASSWORD RESET',
              html: `<h3> You requested to reset your password. Here's your One-Time Password: 
-             ${OTP}.
-             <p> If this isn't you, kindly ignore this mail. </p>`
+             ${user.OTP}. If this isn't you, kindly ignore this mail./p>`
          };
          
          sendMail(domain, key, messageData)
-         setTimeout(() => { return delete user.OTP }, OTPExpiration)
     } catch (error: any) {
         console.error(error);
         return res.status(StatusCodes.BAD_REQUEST).send("Error occured: Could not send OTP")

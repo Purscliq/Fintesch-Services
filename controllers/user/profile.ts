@@ -2,20 +2,20 @@
 import { config } from 'dotenv'
 import { Request, Response } from 'express'
 import { User } from "../../models/User"
-import { createToken } from "../auth"
+import { createToken } from "./auth"
 import { StatusCodes, ReasonPhrases } from 'http-status-codes'
-const expires =  process.env.expires as string 
-const jwtLife = parseInt(expires)
+import { decodeToken } from '../../middlewares/decodeToken'
+import { JwtPayload } from 'jsonwebtoken'
 
 config();
 
 // GET YOUR PROFILE
 export const viewMyProfile = async (req: Request, res: Response) => {
     try {
-        const id = req.params.id
-        const myProfile = await User.findOne({ _id: id })
-            .select("firstName lastName, email")
-
+        const authHeader = req.headers.authorization as string
+        const data = decodeToken(authHeader.split(" ") [1]) as JwtPayload
+        const myProfile = await User.findOne({ _id: data.userId  })
+        console.log(myProfile)
         return res.status(StatusCodes.OK)
             .json({ message: "Retrieving Account details", myProfile });
     } catch(error: any) {
@@ -24,23 +24,22 @@ export const viewMyProfile = async (req: Request, res: Response) => {
     }
 }
 
-// EDIT ACCOUNT DETAILS
+// EDIT PROFILE DETAILS
 export const editMyProfile = async (req: Request, res: Response) => {
     try {
-        const id = req.params.id
-        const updatedProfile = await User.findOneAndUpdate( { _id: id }, req.body, { 
+        const authHeader = req.headers.authorization as string
+        const data = decodeToken(authHeader.split(" ") [1]) as JwtPayload
+        const updatedProfile = await User.findOneAndUpdate( { _id: data.userId }, req.body, { 
             new: true, 
             runValidators: true
-        }).select("firstName lastName, email")
+        })
+
         if(!updatedProfile) {
-            console.log("Error occurred. Cannot Update profile")
             return res.send("Error occurred: cannot update profile")
         }
         // Create new token that contains updated data
         const token = createToken( updatedProfile.email, updatedProfile._id );
-
-        return res.cookie("jwt", token, { httpOnly: true, maxAge: jwtLife })
-            .status(StatusCodes.OK).json({ id: updatedProfile._id, userName: updatedProfile.userName, email: updatedProfile.email })
+        return res.status(StatusCodes.OK).json({ message: "Profile updated successfully", token })
     } catch (error: any) {
             console.error(error)
             res.status(400).json(error.message) 
@@ -50,8 +49,9 @@ export const editMyProfile = async (req: Request, res: Response) => {
 // DELETE USER ACCOUNT
 export const deleteMyProfile = async (req: Request, res: Response) => {
     try {
-        const id = req.params.id
-        await User.findOneAndDelete( { _id: id });
+        const authHeader = req.headers.authorization as string
+        const data = decodeToken(authHeader.split(" ") [1]) as JwtPayload
+        await User.findOneAndDelete({ _id: data.userId  })
         return res.status(200).json({ Success: "Your account has been deleted" })
     } catch (error: any) {
         console.error(error)

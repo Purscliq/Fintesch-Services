@@ -1,16 +1,16 @@
 import { config } from 'dotenv'
 import jwt, { JwtPayload } from 'jsonwebtoken'
-const { jwtKey } = process.env
+const { secretKey } = process.env
 
 config()
 
 export const decodeToken = ( token: string ) => {
     try {
-        if(!jwtKey) {
+        if(!secretKey) {
             throw new Error("Cannot access secret Key")
 		}
-
-        const decodedToken = jwt.verify( token, jwtKey) as JwtPayload
+        
+        const decodedToken = jwt.verify( token, secretKey) as JwtPayload
 
         if(!decodedToken) {
             throw new Error("Token could not be decoded.")

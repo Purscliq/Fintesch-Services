@@ -3,7 +3,7 @@ import { config } from 'dotenv'
 import { Request, Response } from 'express'
 import { JwtPayload } from 'jsonwebtoken'
 import bcrypt from 'bcrypt'
-import { StatusCodes } from 'http-status-codes'
+import { ReasonPhrases, StatusCodes } from 'http-status-codes'
 import { User } from '../../models/User'
 import { verifyResetEmailAndSendOTP } from './sendPasswordResetOTP'
 import { decodeToken } from '../../middlewares/decodeToken'
@@ -13,7 +13,7 @@ config();
 // verify user email and send list
 export class ResetPassword {
     public forgotPassword = async (req:Request, res:Response) => {
-        try {
+        try{
           const { email } = req.body;
           verifyResetEmailAndSendOTP( req, res, email )
         } catch (error: any) {
@@ -22,39 +22,44 @@ export class ResetPassword {
           }
         }
 
-    public changePassword = async (req: Request, res: Response) => {
-        try {
-          const decodedToken = decodeToken(req.cookies.jwt) as JwtPayload
-          const email = decodedToken.email
-          verifyResetEmailAndSendOTP(req, res, email)
+    public verifyOTP = async(req:Request, res:Response) => {
+        try{
+            const { OTP } = req.body;
+            const user:any = await User.findOne({OTP});
+
+            if (!OTP || OTP !== user.OTP) 
+                return res.status(StatusCodes.NOT_FOUND).send("A valid One-time password is needed")
+
+            return res.status(StatusCodes.OK).json({message: "OK"})
         } catch(error: any) {
-          console.log(error)
-          return res.status(201).json(error.message)
+            return res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(ReasonPhrases.INTERNAL_SERVER_ERROR)
         }
-      }
+    }
 
 // Update password in the database
     public resetPassword = async (req:Request, res:Response) => {
-        const { OTP, newPassword, confirmPassword } = req.body;
-        const user: any = await User.findOne( { OTP } );
-
         try {
-            if (!OTP || OTP !== user.OTP) {
-                throw new Error ("A valid one-time password is needed")
+            const { newPassword, confirmPassword } = req.body
+            const authHeader = req.headers.authorization as string
+            const data = decodeToken(authHeader.split(" ")[1]) as JwtPayload
+            const user = await User.findById(data.userId)
+
+            if(!user) {
+                return res.status(StatusCodes.NOT_FOUND).send("User not found")
             }
             if (newPassword !== confirmPassword) {
-                throw new Error("Passwords must match")
+                return res.status(StatusCodes.UNAUTHORIZED).send("Passwords must match")
             }
             
             const verifyPassword = await bcrypt.compare(newPassword, user.password)
 
             if (verifyPassword) {
-                throw new Error ("You cannot use an old password")
+                return res.status(StatusCodes.BAD_REQUEST).send("You cannot use an old password")
             }
 
             const securePass = await bcrypt.hash(newPassword, bcrypt.genSaltSync(10));
-            const updatedUser = await User.findOneAndUpdate({ OTP }, { password: securePass }, 
-                { new: true, runValidators: true }).select("firstName lastName email password")
+            const updatedUser = await User.findOneAndUpdate({ _id: data.userId }, { password: securePass }, 
+                { new: true, runValidators: true })
 
             console.log("Your password has been successfully changed")
             return res.status(201).json({

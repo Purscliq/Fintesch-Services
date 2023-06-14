@@ -17,9 +17,16 @@ const transactionSchema = new Schema<Transaction>({
         ref: "User",
         required: true
     },
+    Bank: {
+        type: String,
+        required: true
+    },
     amount: {
         type: Number,
         required: true
+    },
+    description: {
+        type: String
     },
     fee: {
         type: Number,
@@ -28,9 +35,16 @@ const transactionSchema = new Schema<Transaction>({
     type: {
         type: String,
         enum: {
-            values: ["withdrawal, deposit, transfer, payment"]
+            values: ["withdrawal, deposit, transfer"]
         }
     },
+    status: {
+        type: String,
+        enum: {
+            values: ["Pending, Success, Failed"]
+        },
+        default: "Pending" 
+    }
 },
 
   { timestamps : true, strict: true }
