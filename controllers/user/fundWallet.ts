@@ -9,28 +9,27 @@ import { decodeToken } from '../../middlewares/decodeToken'
 config()
 const budKey = process.env.bud_key as string
 
+// set headers
+const headers = {
+    authorization: `Bearer ${budKey}`,
+    "content-type": "application/json"
+}
+
 // ENCRYPT CARD
 export const fundWallet = async(req:Request, res:Response) => {
     const authHeader = req.headers.authorization as string
-    const data = decodeToken(authHeader.split(" ") [1]) as JwtPayload
+    const data = decodeToken(authHeader.split(" ")[1]) as JwtPayload
     const reference = generateRefID()
     const url = "https://api.budpay.com/api/s2s/test/encryption"
     const payUrl = "https://api.budpay.com/api/s2s/transaction/initialize"
 
-    const headers = {
-        authorization: `Bearer ${budKey}`,
-        "content-type": "application/json"
-    }
-
     try {
         // get card details
         const { amount, number, expiryMonth, expiryYear, cvv, pin } = req.body
-
         const budData = {
             data: { number, expiryMonth, expiryYear, cvv },
             reference
         }
-
         // Make axios API call to encrypt card
         const response = await axios.post(url, budData, { headers })
         const encryptedCard = response.data

@@ -5,8 +5,8 @@ const KYCSchema = new Schema<KYC>({
     user: {
         type: Schema.Types.ObjectId,
         ref: "User",
-        required: true,
-        unique: true
+        unique: true,
+        required: true
     },
     firstName: {
         type: String,
@@ -24,26 +24,26 @@ const KYCSchema = new Schema<KYC>({
     },
     phoneNumber: {
         type: Number,
-        required: true,
         unique: true,
-        minimum: [15, "Phone number is too short"]
+        minimum: [15, "Phone number is too short"],
+        // required: true,
       },
       BVN: {
-        type: Number,
+        type: String,
         unique: true,
         required: true
     },
     address: {
         type: String,
-        required: true
+        // required: true
     },
     gender: {
       type: String,
-      required: true
+      // required: true
     },
     nationality: {
         type: String,
-        required: true
+        // required: true
     },
     idType: {
         type: String,
@@ -52,7 +52,7 @@ const KYCSchema = new Schema<KYC>({
     idNumber: {
         type: Number,
         // required: true,
-        // unique: true
+        unique: true
     },
     issueDate: {
         type: Date,
@@ -62,8 +62,8 @@ const KYCSchema = new Schema<KYC>({
         type: Date,
         // required: true
     },
-    DateOfBirth: {
-      type: Date,
+    dateOfBirth: {
+      type: String,
     },
     OTP: {
         type: Number

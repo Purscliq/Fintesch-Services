@@ -19,7 +19,7 @@ export const createToken = ( email:string, userId:any ) => {
     const payload = { email, userId } as JwtPayload
     if(!secretKey)
         throw new Error(' token key is undefined')
-    return jwt.sign( payload, secretKey, { expiresIn: "10h"} )
+    return jwt.sign( payload, secretKey, { expiresIn: "1d"} )
 }
 
 // AUTHENTICATE CLASS

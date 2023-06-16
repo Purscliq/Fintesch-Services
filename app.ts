@@ -16,6 +16,7 @@ import changePasswordRoute from './routes/changePasswordRoute'
 import userProfileRoute from './routes/clientRoute/profileManagementRoute'
 import userAccountRoute from './routes/clientRoute/accountManagementRoute'
 import userTransactionsRoute from './routes/clientRoute/transactionRoute'
+import kycVerificationRoute from './routes/clientRoute/kycVerificationRoute'
 import quickServicesRoute from './routes/clientRoute/quickServicesRoute'
 import accountManagementRoute from "./routes/adminRoute/accountmanagementRoute"
 import transactionManagementRoute from "./routes/adminRoute/transactionManagementRoute"
@@ -45,6 +46,7 @@ app.use("/api", verifyToken)
 app.use("api/admin", isAdmin)
 app.use("/api/pwd/reset", changePasswordRoute)
 app.use("/api/profile", userProfileRoute)
+app.use("/api/verifyId", kycVerificationRoute)
 app.use("/api/account", userAccountRoute)
 app.use("/api/transaction", userTransactionsRoute)
 app.use("/api/services", quickServicesRoute)
