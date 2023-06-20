@@ -48,7 +48,8 @@ export const fundWallet = async(req:Request, res:Response) => {
         
         const resp = await axios.post(payUrl, paymentData, { headers })
         const resInfo = resp.data
-        return res.status(StatusCodes.OK).json({ reference, encryptedCard, resInfo })
+        console.log(resInfo)
+        return res.status(StatusCodes.OK).json({ resInfo })
     } catch(error:any) {
         res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(error.message)
         console.error(error)

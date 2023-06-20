@@ -45,7 +45,8 @@ const fundWallet = async (req, res) => {
         };
         const resp = await axios_1.default.post(payUrl, paymentData, { headers });
         const resInfo = resp.data;
-        return res.status(http_status_codes_1.StatusCodes.OK).json({ reference, encryptedCard, resInfo });
+        console.log(resInfo);
+        return res.status(http_status_codes_1.StatusCodes.OK).json({ resInfo });
     }
     catch (error) {
         res.status(http_status_codes_1.StatusCodes.INTERNAL_SERVER_ERROR).send(error.message);

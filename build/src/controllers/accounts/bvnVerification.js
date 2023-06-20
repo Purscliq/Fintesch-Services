@@ -34,6 +34,7 @@ const bvnVerification = async (req, res) => {
         };
         const response = await axios_1.default.post(url, data, { headers });
         const info = response.data.data;
+        // Get middle name and convert to sentence case
         let middlename = info.middlename;
         middlename = middlename.charAt(0).toUpperCase() + middlename.slice(1).toLowerCase();
         if ((info.firstname).toLowerCase() !== firstName.toLowerCase() || (info.lastname).toLowerCase() !== lastName.toLowerCase())

@@ -49,6 +49,7 @@ export const createCustomer = async (req: Request, res: Response) => {
 export const createAccount = async(req:Request, res:Response) => {
     const url = "https://api.budpay.com/api/v2/dedicated_virtual_account"
     try {
+        // generate customer code
         const customerCode = await createCustomer(req, res)   
         const customerData = {
             customer: customerCode

@@ -50,6 +50,7 @@ export const bvnVerification = async (req:Request, res:Response) => {
         }
         const response = await axios.post(url, data, { headers })
         const info = response.data.data
+        // Get middle name and convert to sentence case
         let middlename = info.middlename
         middlename = middlename.charAt(0).toUpperCase() + middlename.slice(1).toLowerCase();
 
@@ -87,7 +88,7 @@ export const bvnVerification = async (req:Request, res:Response) => {
             message: "An OTP will be sent to your Phone number",  
             result: info
         })
-    } catch(error:any) {
+    } catch(error: any) {
         console.log(error)
         return res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(ReasonPhrases.INTERNAL_SERVER_ERROR)
     }
