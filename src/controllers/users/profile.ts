@@ -4,7 +4,7 @@ import { Request, Response } from 'express'
 import { User } from "../../models/User"
 import { createToken } from "./auth"
 import { StatusCodes, ReasonPhrases } from 'http-status-codes'
-import { decodeToken } from '../../middlewares/decodeToken'
+import { decodeToken } from '../utils/decodeToken'
 import { JwtPayload } from 'jsonwebtoken'
 
 config();
@@ -13,11 +13,11 @@ config();
 export const viewMyProfile = async (req: Request, res: Response) => {
     try {
         const authHeader = req.headers.authorization as string
-        const data = decodeToken(authHeader.split(" ") [1]) as JwtPayload
-        const myProfile = await User.findOne({ _id: data.userId  })
+        const data = decodeToken(authHeader.split(" ")[1]) as JwtPayload
+        const myProfile = await User.findOne({_id: data.userId})
         console.log(myProfile)
         return res.status(StatusCodes.OK)
-            .json({ message: "Retrieving Account details", myProfile });
+            .json(myProfile);
     } catch(error: any) {
         console.error(error) 
         res.status(StatusCodes.UNAUTHORIZED).json(error.message)
@@ -28,7 +28,7 @@ export const viewMyProfile = async (req: Request, res: Response) => {
 export const editMyProfile = async (req: Request, res: Response) => {
     try {
         const authHeader = req.headers.authorization as string
-        const data = decodeToken(authHeader.split(" ") [1]) as JwtPayload
+        const data = decodeToken(authHeader.split(" ")[1]) as JwtPayload
         const updatedProfile = await User.findOneAndUpdate( { _id: data.userId }, req.body, { 
             new: true, 
             runValidators: true
@@ -39,7 +39,7 @@ export const editMyProfile = async (req: Request, res: Response) => {
         }
         // Create new token that contains updated data
         const token = createToken( updatedProfile.email, updatedProfile._id );
-        return res.status(StatusCodes.OK).json({ message: "Profile updated successfully", token })
+        return res.status(StatusCodes.OK).json({ token, updatedProfile })
     } catch (error: any) {
             console.error(error)
             res.status(400).json(error.message) 
@@ -61,13 +61,13 @@ export const deleteMyProfile = async (req: Request, res: Response) => {
 }
 
 // USER SIGNOUT METHOD
-export const signOut = async (req:Request, res:Response) => {
-    try {
-        return res.cookie("jwt", "", { maxAge: 1 }).status(StatusCodes.OK).json({
-            message: "You have been successfully Logged Out"
-        })
-    } catch (error) {
-        console.error(error)
-        return res.status(StatusCodes.BAD_REQUEST).send(ReasonPhrases.BAD_REQUEST)
-    }
-}
+// export const signOut = async (req:Request, res:Response) => {
+//     try {
+//         return res.cookie("jwt", "", { maxAge: 1 }).status(StatusCodes.OK).json({
+//             message: "You have been successfully Logged Out"
+//         })
+//     } catch (error) {
+//         console.error(error)
+//         return res.status(StatusCodes.BAD_REQUEST).send(ReasonPhrases.BAD_REQUEST)
+//     }
+// }

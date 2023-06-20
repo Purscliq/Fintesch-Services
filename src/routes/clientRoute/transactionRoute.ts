@@ -1,7 +1,8 @@
 import express from 'express'
+import { fundWallet } from '../../controllers/transactions/fundMobileWallet'
+import { acceptMoney } from '../../controllers/transactions/oneTimeTransfer'
+
 const router = express.Router()
-import { fundWallet } from '../../controllers/user/fundWallet'
-import { acceptMoney } from '../../controllers/user/acceptTransfer'
 
 router.route("/fund")
     .post(fundWallet)

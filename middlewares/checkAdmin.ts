@@ -1,8 +1,8 @@
 import { Request, Response, NextFunction } from 'express'
 import { StatusCodes } from 'http-status-codes'
-import { User } from '../models/User'
+import { User } from '../src/models/User';
 import { JwtPayload } from 'jsonwebtoken';
-import { decodeToken } from './decodeToken'
+import { decodeToken } from '../src/controllers/utils/decodeToken'
 
 export async function isAdmin(req: Request, res: Response, next: NextFunction) {
     const decoded = decodeToken(req.cookies.jwt) as JwtPayload

@@ -4,9 +4,10 @@ import { JwtPayload } from 'jsonwebtoken'
 import axios from 'axios'
 import { StatusCodes } from 'http-status-codes'
 import { generateRefID } from '../utils/generateRef'
-import { decodeToken } from '../../middlewares/decodeToken'
+import { decodeToken } from '../utils/decodeToken'
 
 config()
+
 const budKey = process.env.bud_key as string
 
 // set headers

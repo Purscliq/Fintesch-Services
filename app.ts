@@ -10,18 +10,18 @@ config()
 const app = express()
 
 // ROUTES
-import authRoute from './routes/clientRoute/authRoute'
-import forgotPasswordRoute from './routes/forgotPasswordRoute'
-import changePasswordRoute from './routes/changePasswordRoute'
-import userProfileRoute from './routes/clientRoute/profileManagementRoute'
-import userAccountRoute from './routes/clientRoute/accountManagementRoute'
-import userTransactionsRoute from './routes/clientRoute/transactionRoute'
-import kycVerificationRoute from './routes/clientRoute/kycVerificationRoute'
-import quickServicesRoute from './routes/clientRoute/quickServicesRoute'
-import accountManagementRoute from "./routes/adminRoute/accountmanagementRoute"
-import transactionManagementRoute from "./routes/adminRoute/transactionManagementRoute"
-import userManagementRoute from "./routes/adminRoute/userManagementRoute"
-import cardManagementRoute from "./routes/adminRoute/cardManagementRoute"
+import authRoute from './src/routes/clientRoute/authRoute'
+import forgotPasswordRoute from './src/routes/forgotPasswordRoute'
+import changePasswordRoute from './src/routes/changePasswordRoute'
+import userProfileRoute from './src/routes/clientRoute/profileManagementRoute'
+import userAccountRoute from './src/routes/clientRoute/accountManagementRoute'
+import userTransactionsRoute from './src/routes/clientRoute/transactionRoute'
+import kycVerificationRoute from './src/routes/clientRoute/kycVerificationRoute'
+import quickServicesRoute from './src/routes/clientRoute/quickServicesRoute'
+import accountManagementRoute from "./src/routes/adminRoute/accountmanagementRoute"
+import transactionManagementRoute from "./src/routes/adminRoute/transactionManagementRoute"
+import userManagementRoute from "./src/routes/adminRoute/userManagementRoute"
+import cardManagementRoute from "./src/routes/adminRoute/cardManagementRoute"
 
 // CUSTOM MIDDLEWARES
 import { verifyToken } from './middlewares/authenticate'

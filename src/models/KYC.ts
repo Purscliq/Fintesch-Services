@@ -23,9 +23,8 @@ const KYCSchema = new Schema<KYC>({
         trim: true
     },
     phoneNumber: {
-        type: Number,
+        type: String,
         unique: true,
-        minimum: [15, "Phone number is too short"],
         // required: true,
       },
       BVN: {

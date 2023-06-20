@@ -1,7 +1,7 @@
 // IMPORT ROUTER
 import express from 'express'
 const router = express.Router()
-import { bvnVerification } from '../../controllers/user/BVN_Verification'
+import { bvnVerification } from '../../controllers/accounts/bvnVerification'
 
 router.route("/")
     .post(bvnVerification)

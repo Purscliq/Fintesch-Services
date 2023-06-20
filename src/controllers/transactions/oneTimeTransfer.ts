@@ -4,7 +4,7 @@ import { Request, Response } from "express"
 import { JwtPayload } from 'jsonwebtoken'
 import { StatusCodes } from 'http-status-codes'
 import { generateRefID } from '../utils/generateRef'
-import { decodeToken } from '../../middlewares/decodeToken'
+import { decodeToken } from '../utils/decodeToken'
 import { KYC } from '../../models/KYC'
 
 config()
@@ -29,9 +29,6 @@ export const acceptMoney = async(req:Request, res:Response) => {
             return res.status(StatusCodes.NOT_FOUND).send("Not Found")
         if(!kyc.status)
             return res.status(StatusCodes.NOT_FOUND).send("KYC not complete")
-        if(!kyc.otherNames) {
-            const name = kyc.firstName + " " + kyc.lastName
-        }
 
         const name = kyc.firstName + " " + kyc.otherNames + " " + kyc.lastName
         const { amount } = req.body
@@ -46,7 +43,7 @@ export const acceptMoney = async(req:Request, res:Response) => {
 
         const response = await axios.post(url, paymentData, { headers })
         const info = response.data
-        res.status(StatusCodes.OK).json(info)
+        return res.status(StatusCodes.OK).json(info)
     } catch(error:any) {
         throw error
     }

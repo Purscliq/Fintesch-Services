@@ -6,7 +6,7 @@ import bcrypt from 'bcrypt'
 import { ReasonPhrases, StatusCodes } from 'http-status-codes'
 import { User } from '../../models/User'
 import { verifyResetEmailAndSendOTP } from './sendPasswordResetOTP'
-import { decodeToken } from '../../middlewares/decodeToken'
+import { decodeToken } from '../utils/decodeToken'
 
 config();
 

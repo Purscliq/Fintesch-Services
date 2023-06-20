@@ -4,7 +4,7 @@ import { JwtPayload } from 'jsonwebtoken'
 import axios from 'axios'
 import { StatusCodes } from 'http-status-codes'
 import { generateRefID } from '../utils/generateRef'
-import { decodeToken } from '../../middlewares/decodeToken'
+import { decodeToken } from '../utils/decodeToken'
 
 config()
 
@@ -24,7 +24,7 @@ export const bankList = async(req:Request, res:Response) => {
     }
     const response = await axios.get(bankListUrl, { headers: header })
     const bankList = response.data.data // returns an array of objects
-    res.status(StatusCodes.OK).json(bankList)
+    res.status(StatusCodes.OK).json({ bankList })
     return bankList
 }
 

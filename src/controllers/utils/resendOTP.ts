@@ -1,6 +1,6 @@
 import { Request, Response } from "express"
 import { JwtPayload } from "jsonwebtoken"
-import { decodeToken } from "../../middlewares/decodeToken"
+import { decodeToken } from "./decodeToken"
 import { generateOTP } from "./generateOTP"
 import { User } from "../../models/User"
 import { ReasonPhrases, StatusCodes } from "http-status-codes"
