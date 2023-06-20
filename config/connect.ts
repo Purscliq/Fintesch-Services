@@ -1,7 +1,7 @@
 import { config } from 'dotenv' 
 import mongoose from 'mongoose';
 
-config()
+if (process.env.NODE_ENV !== 'production') config()
 
 const { MongoURI } = process.env;
 
