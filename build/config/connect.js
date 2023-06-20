@@ -7,8 +7,8 @@ exports.disconnectFromDatabase = exports.connectToDatabase = void 0;
 const dotenv_1 = require("dotenv");
 const mongoose_1 = __importDefault(require("mongoose"));
 (0, dotenv_1.config)();
-const { MONGODB_URI } = process.env;
-if (!MONGODB_URI) {
+const { MongoURI } = process.env;
+if (!MongoURI) {
     throw new Error('MongoDB URI not found in environment variable!');
 }
 const options = {
@@ -18,7 +18,7 @@ const options = {
 // CONNECT TO DATABASE
 const connectToDatabase = async () => {
     try {
-        await mongoose_1.default.connect(MONGODB_URI, options);
+        await mongoose_1.default.connect(MongoURI, options);
         console.log('Connected to MongoDB!');
     }
     catch (error) {
