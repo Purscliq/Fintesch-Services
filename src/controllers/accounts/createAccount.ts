@@ -5,6 +5,8 @@ import { JwtPayload } from 'jsonwebtoken'
 import { StatusCodes } from 'http-status-codes'
 import { decodeToken } from '../utils/decodeToken'
 import { KYC } from '../../models/KYC'
+import { Account } from '../../models/Account'
+import { Transaction } from '../../models/Transaction'
 
 config()
 
@@ -21,9 +23,9 @@ export const createCustomer = async (req: Request, res: Response) => {
     try{
     // Get user data from auth token
     const authHeader = req.headers.authorization as string
-    const data = decodeToken(authHeader.split(" ")[1]) as JwtPayload
+    const userPayload = decodeToken(authHeader.split(" ")[1]) as JwtPayload
     const url = "https://api.budpay.com/api/v2/customer"
-    const kyc = await KYC.findOne({ user: data.userId })
+    const kyc = await KYC.findOne({ user: userPayload.userId })
 
     if(!kyc) 
         return res.status(StatusCodes.NOT_FOUND).send("KYC Not Found")
@@ -32,7 +34,7 @@ export const createCustomer = async (req: Request, res: Response) => {
 
     // Create customer
     const customer = {
-        email: data.email,
+        email: userPayload.email,
         first_name: kyc.firstName,
         last_name: kyc.lastName,
         phone: kyc.phoneNumber
@@ -47,15 +49,28 @@ export const createCustomer = async (req: Request, res: Response) => {
 
 // Create account
 export const createAccount = async(req:Request, res:Response) => {
+    const authHeader = req.headers.authorization as string
+    const userPayload = decodeToken(authHeader.split(" ")[1]) as JwtPayload
     const url = "https://api.budpay.com/api/v2/dedicated_virtual_account"
+    const customerCode = await createCustomer(req, res)  
     try {
-        // generate customer code
-        const customerCode = await createCustomer(req, res)   
-        const customerData = {
-            customer: customerCode
-        }
-        const response = await axios.post(url, customerData, { headers })
+        // make axios call to API to create account
+        // @params url, customer_code, headers
+        const response = await axios.post(url, { customer: customerCode }, { headers })
         const info = response.data
+
+        // account model payload
+        const accountData = {
+            user: userPayload.userId,
+            accountStatus: info.status,
+            accountData: info.data
+        }
+
+        // store account details to customer database
+        const account = new Account(accountData)
+        await account.save()
+
+        // return results
         return res.status(StatusCodes.OK).json(info)
     } catch(error:any) {
         console.error(error)

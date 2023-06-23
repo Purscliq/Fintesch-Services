@@ -8,20 +8,11 @@ const accountSchema = new Schema<Account>({
         unique: true,
         required: true
     },
-    PIN: {
-        type: Number,
-        required: true,
-        unique: true,
-        maximum: 4
-    },
-    accountName: {
-        type: String,
-        required: true
-    },
-    accountNumber: {
-        type: Number,
-        unique: true,
-        required: true
+    accountStatus: {
+        type: Boolean,
+        },
+    accountData: {
+        type: Object
     },
     balance: {
         type: Number,
@@ -33,15 +24,12 @@ const accountSchema = new Schema<Account>({
         required: true,
         default: "NGN"
     },
-    status: {
-        type: String,
-        enum: { values: ['active', 'dormant', 'closed'], message: '{VALUE} is not supported' },
-        default: 'active'
+    PIN: {
+        type: Number,
+        unique: true,
+        maximum: 4
     },
-    OTP: Number
-  },
-  { timestamps: true, strict: true }
-)
+})
 
 export const Account = model("Account", accountSchema)
 

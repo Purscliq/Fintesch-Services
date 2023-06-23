@@ -39,17 +39,21 @@ export const bvnVerification = async (req:Request, res:Response) => {
     // PERFORM KYC
     try {
         const url = `https://vapi.verifyme.ng/v1/verifications/identities/bvn/${BVN}`
+
         const headers = {
             authorization: `Bearer ${liveKey}`,
             'Content-Type': 'application/json'
         }
+        
         const data = {
             firstname: firstName,
             lastname: lastName,
             dob: dateOfBirth
         }
+
         const response = await axios.post(url, data, { headers })
         const info = response.data.data
+
         // Get middle name and convert to sentence case
         let middlename = info.middlename
         middlename = middlename.charAt(0).toUpperCase() + middlename.slice(1).toLowerCase();

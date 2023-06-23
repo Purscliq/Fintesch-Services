@@ -35,6 +35,8 @@ export const fundWallet = async(req:Request, res:Response) => {
         const response = await axios.post(url, budData, { headers })
         const encryptedCard = response.data
 
+        console.log(encryptedCard)
+
         // Initialize Wallet Funding
         const paymentData = {
                 amount, 

@@ -33,6 +33,7 @@ const fundWallet = async (req, res) => {
         // Make axios API call to encrypt card
         const response = await axios_1.default.post(url, budData, { headers });
         const encryptedCard = response.data;
+        console.log(encryptedCard);
         // Initialize Wallet Funding
         const paymentData = {
             amount,

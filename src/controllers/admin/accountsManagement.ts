@@ -97,3 +97,18 @@ export const closeAccount = async ( req: Request, res: Response ) => {
         res.status(404).json(err.message)
     }
 }
+
+// retreive wallet balance
+export const getWalletBalance = async() => {
+    const balanceUrl = "https://api.budpay.com/api/v2/wallet_balance/NGN"
+    const header = {
+        authorization: `Bearer ${budKey}` 
+    }
+    try {
+        const response = await axios.get(balanceUrl, { headers: header })
+        const balance = response.data.data.balance 
+        return balance
+    } catch(error: any) {
+        console.error(error)
+    }
+}

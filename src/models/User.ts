@@ -21,7 +21,7 @@ const userSchema = new Schema<User>({
       type: String,
       required: [true, "This field is required"],
       trim: true,
-      minlength: [6, "Minimun password character is 6"]
+      minlength: [6, "Minimum password character is 6"]
     },
     role: {
       type: String,
