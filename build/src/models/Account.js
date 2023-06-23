@@ -9,20 +9,11 @@ const accountSchema = new mongoose_1.Schema({
         unique: true,
         required: true
     },
-    PIN: {
-        type: Number,
-        required: true,
-        unique: true,
-        maximum: 4
+    accountStatus: {
+        type: Boolean,
     },
-    accountName: {
-        type: String,
-        required: true
-    },
-    accountNumber: {
-        type: Number,
-        unique: true,
-        required: true
+    accountData: {
+        type: Object
     },
     balance: {
         type: Number,
@@ -34,11 +25,10 @@ const accountSchema = new mongoose_1.Schema({
         required: true,
         default: "NGN"
     },
-    status: {
-        type: String,
-        enum: { values: ['active', 'dormant', 'closed'], message: '{VALUE} is not supported' },
-        default: 'active'
+    PIN: {
+        type: Number,
+        unique: true,
+        maximum: 4
     },
-    OTP: Number
-}, { timestamps: true, strict: true });
+});
 exports.Account = (0, mongoose_1.model)("Account", accountSchema);

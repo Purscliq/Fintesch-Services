@@ -1,5 +1,11 @@
 import { Account } from "../../models/Account"
 import {Request, Response} from 'express'
+import axios from "axios"
+import {config} from "dotenv"
+
+config()
+
+const budKey = process.env.bud_key as string
 
 export const viewAllAccounts = async ( req: Request, res: Response ) => {
     try {

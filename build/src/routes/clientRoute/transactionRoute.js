@@ -7,9 +7,11 @@ const fundMobileWallet_1 = require("../../controllers/transactions/fundMobileWal
 const oneTimeTransfer_1 = require("../../controllers/transactions/oneTimeTransfer");
 const transferMoney_1 = require("../../controllers/transactions/transferMoney");
 const fetchTransactionHistory_1 = require("../../controllers/transactions/fetchTransactionHistory");
+const transferMoney_2 = require("../../controllers/transactions/transferMoney");
 const router = express_1.default.Router();
 router.route("/fund").post(fundMobileWallet_1.fundWallet);
 router.route("/accept-money").post(oneTimeTransfer_1.acceptMoney);
 router.route("/send-money").post(transferMoney_1.sendMoney);
 router.route("/history").get(fetchTransactionHistory_1.fetchTransactionHistory);
+router.route("/validate").post(transferMoney_2.accountNameValidation);
 module.exports = router;

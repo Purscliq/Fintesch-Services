@@ -1,7 +1,14 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.closeAccount = exports.deactivateAccount = exports.activateaccount = exports.viewAccount = exports.viewAllAccounts = void 0;
+exports.getWalletBalance = exports.closeAccount = exports.deactivateAccount = exports.activateaccount = exports.viewAccount = exports.viewAllAccounts = void 0;
 const Account_1 = require("../../models/Account");
+const axios_1 = __importDefault(require("axios"));
+const dotenv_1 = require("dotenv");
+(0, dotenv_1.config)();
+const budKey = process.env.bud_key;
 const viewAllAccounts = async (req, res) => {
     try {
         const account = await Account_1.Account.find()
@@ -89,3 +96,19 @@ const closeAccount = async (req, res) => {
     }
 };
 exports.closeAccount = closeAccount;
+// retreive wallet balance
+const getWalletBalance = async () => {
+    const balanceUrl = "https://api.budpay.com/api/v2/wallet_balance/NGN";
+    const header = {
+        authorization: `Bearer ${budKey}`
+    };
+    try {
+        const response = await axios_1.default.get(balanceUrl, { headers: header });
+        const balance = response.data.data.balance;
+        return balance;
+    }
+    catch (error) {
+        console.error(error);
+    }
+};
+exports.getWalletBalance = getWalletBalance;
