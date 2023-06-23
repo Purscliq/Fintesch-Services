@@ -24,7 +24,7 @@ export const bankList = async(req:Request, res:Response) => {
     const header = {
         authorization: `Bearer ${budKey}` 
     }
-    // make api call to external league
+    // make api call to external service
     try {
         const response = await axios.get(bankListUrl, { headers: header })
         const bankList = response.data.data // returns an array of objects
@@ -42,7 +42,7 @@ export const accountNameValidation = async(req: Request, res: Response) => {
         authorization: `Bearer ${budKey}`,
         "content-type": "application/json"
     }
-
+    // make api call to external service
     try {
          // validate parameters
          const validationData = {
@@ -76,7 +76,7 @@ export const sendMoney = async(req:Request, res:Response) => {
         // make api call to financial service 
         const response = await axios.post(url, transferData, { headers })
         const info = response.data
-        console.log(info)
+        return res.status(StatusCodes.OK).json(info)
     } catch(error:any) {
         res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error.message)
         console.error(error)
