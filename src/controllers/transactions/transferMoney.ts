@@ -28,13 +28,15 @@ export const bankList = async(req:Request, res:Response) => {
     try {
         const response = await axios.get(bankListUrl, { headers: header })
         const bankList = response.data.data // returns an array of objects
-        return res.status(StatusCodes.OK).json({ List: bankList })
+        return res.status(StatusCodes.OK).json({ bankList })
     } catch(error: any) {
         console.error(error)
+       return res.status(StatusCodes.INTERNAL_SERVER_ERROR).send("An error occurred with generating bank list")
     }
 }
 
 // Account Name validation
+// @ Runs upon receiving bank name and account number input 
 export const accountNameValidation = async(req: Request, res: Response) => {
     const url = "https://api.budpay.com/api/v2/account_name_verify"
     // set header
@@ -46,8 +48,8 @@ export const accountNameValidation = async(req: Request, res: Response) => {
     try {
          // validate parameters
          const validationData = {
-            bank_code: "000016",
-            account_number: "3097261390",
+            bank_code: req.body.bankCode,
+            account_number: req.body.accountNumber,
             currency: "NGN"
         }
         const response = await axios.post(url, validationData, { headers })
