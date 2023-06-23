@@ -47,7 +47,7 @@ export const accountNameValidation = async(req: Request, res: Response) => {
          // validate parameters
          const validationData = {
             bank_code: "000016",
-            account_number: "3099548745",
+            account_number: "3097261390",
             currency: "NGN"
         }
         const response = await axios.post(url, validationData, { headers })
