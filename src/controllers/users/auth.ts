@@ -27,8 +27,7 @@ export class Authenticate {
     public signUp = async (req: Request, res: Response ) => {
         try {
             const { email, password, confirmPassword } = req.body
-            const userCount = await User.countDocuments({})
-            const checksIfUserExists = await User.findOne({ email })
+            const checksIfUserExists = await User.findOne({ email }).select("email")
             
             if(checksIfUserExists) {
                 return res.status(StatusCodes.BAD_REQUEST).send('This user already exists.')
@@ -38,10 +37,6 @@ export class Authenticate {
             }
             const securePassword = await bcrypt.hash(password, bcrypt.genSaltSync(10))
             const user = new User({ email, password: securePassword })
-
-            if(userCount === 0) {
-                user.role = "Admin"
-            }
             user.OTP = generateOTP()
             await user.save()
 
@@ -56,6 +51,14 @@ export class Authenticate {
                 html: mailText
             }
             sendMail(domain, key, messageData)
+
+            const userCount = await User.countDocuments({})
+
+            if(userCount === 0) {
+                user.role = "Admin"
+                await user.save()
+            }
+
             return res.status(StatusCodes.OK).json({ 
                 Success: "USER PROFILE CREATED SUCCESSFULLY!", 
                 message: "A One-Time Password has been sent to your mail",
@@ -71,12 +74,12 @@ export class Authenticate {
     public signIn = async ( req:Request, res:Response) => {
         try {
             const { email, password } = req.body
-            const profile = await User.findOne({ email })
+            const profile = await User.findOne({ email }).select("email password")
             
             if (!profile) 
                 return res.status(StatusCodes.NOT_FOUND).json({ message: "This user is " + ReasonPhrases.NOT_FOUND })
            
-            const isPasswordMatch = await bcrypt.compare(password, profile.password )
+            const isPasswordMatch = await bcrypt.compare( password, profile.password )
 
             if (!isPasswordMatch)
                 return res.status(StatusCodes.UNAUTHORIZED).json({ message: "The password you entered is incorrect" })

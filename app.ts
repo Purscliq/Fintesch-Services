@@ -14,14 +14,15 @@ import authRoute from './src/routes/clientRoute/authRoute'
 import forgotPasswordRoute from './src/routes/forgotPasswordRoute'
 import changePasswordRoute from './src/routes/changePasswordRoute'
 import userProfileRoute from './src/routes/clientRoute/profileManagementRoute'
-import userAccountRoute from './src/routes/clientRoute/accountManagementRoute'
+import WalletRoute from './src/routes/clientRoute/walletManagementRoute'
 import userTransactionsRoute from './src/routes/clientRoute/transactionRoute'
 import kycVerificationRoute from './src/routes/clientRoute/kycVerificationRoute'
 import quickServicesRoute from './src/routes/clientRoute/quickServicesRoute'
-import accountManagementRoute from "./src/routes/adminRoute/accountmanagementRoute"
+import walletManagementRoute from "./src/routes/adminRoute/walletmanagementRoute"
 import transactionManagementRoute from "./src/routes/adminRoute/transactionManagementRoute"
 import userManagementRoute from "./src/routes/adminRoute/userManagementRoute"
 import cardManagementRoute from "./src/routes/adminRoute/cardManagementRoute"
+import webhookRoute from './src/routes/clientRoute/webhookRoute'
 
 // CUSTOM MIDDLEWARES
 import { verifyToken } from './middlewares/authenticate'
@@ -46,12 +47,13 @@ app.use("/api", verifyToken)
 app.use("api/admin", isAdmin)
 app.use("/api/pwd/reset", changePasswordRoute)
 app.use("/api/profile", userProfileRoute)
-app.use("/api/verifyId", kycVerificationRoute)
-app.use("/api/account", userAccountRoute)
+app.use("/api/kyc", kycVerificationRoute)
+app.use("/api/account", WalletRoute)
 app.use("/api/transaction", userTransactionsRoute)
+app.use("/api/transaction", webhookRoute)
 app.use("/api/services", quickServicesRoute)
 app.use("/api/admin/users", userManagementRoute )
-app.use("/api/admin/accounts", accountManagementRoute)
+app.use("/api/admin/accounts", walletManagementRoute)
 app.use("/api/admin/transactions", transactionManagementRoute)
 app.use("/api/admin/cards", cardManagementRoute)
 

@@ -25,7 +25,7 @@ export class ResetPassword {
     public verifyOTP = async(req:Request, res:Response) => {
         try{
             const { OTP } = req.body;
-            const user:any = await User.findOne({OTP});
+            const user:any = await User.findOne({ OTP });
 
             if (!OTP || OTP !== user.OTP) 
                 return res.status(StatusCodes.NOT_FOUND).send("A valid One-time password is needed")

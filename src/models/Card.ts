@@ -8,7 +8,7 @@ const cardSchema = new Schema<Card>({
         unique: true,
         required: true
     },
-    accountID: {
+    account: {
         type: Schema.Types.ObjectId,
         ref: "Account",
         unique: true,
@@ -20,27 +20,23 @@ const cardSchema = new Schema<Card>({
         unique: true,
         maximum: 4
     },
-    cardName: {
+    name: {
+        type: String,
+        unique: true
+        // required: true,
+    },
+    cvv: {
         type: String,
         required: true,
         unique: true
     },
-    cvv: {
-        type: Number,
+    number: {
+        type: String,
         required: true,
         unique: true
-    },
-    cardNumber: {
-        type: Number,
-        required: true,
-        unique: true
-    },
-    issueDate: {
-        type: Date,
-        required: true
     },
     expiryDate: {
-        type: Date,
+        type: String,
         required: true
     },
     cardType: {
@@ -52,7 +48,8 @@ const cardSchema = new Schema<Card>({
     OTP: Number,
     currency: {
         type: String,
-        required: true
+        required: true,
+        default: "NGN"
     },
     status: {
         type: String,

@@ -9,7 +9,6 @@ import { Account } from '../../models/Account'
 import { Transaction } from '../../models/Transaction'
 
 config()
-
 const budKey = process.env.bud_key as string
 
 // set headers

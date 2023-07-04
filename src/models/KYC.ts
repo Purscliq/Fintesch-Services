@@ -27,7 +27,7 @@ const KYCSchema = new Schema<KYC>({
         unique: true,
         // required: true,
       },
-      BVN: {
+    BVN: {
         type: String,
         unique: true,
         required: true

@@ -5,6 +5,9 @@ import axios from 'axios'
 import { StatusCodes } from 'http-status-codes'
 import { generateRefID } from '../utils/generateRef'
 import { decodeToken } from '../utils/decodeToken'
+import { Card } from '../../models/Card'
+import { Account } from '../../models/Account'
+import bcrypt from "bcrypt"
 
 config()
 
@@ -24,9 +27,12 @@ export const fundWallet = async(req:Request, res:Response) => {
     const url = "https://api.budpay.com/api/s2s/test/encryption"
     const payUrl = "https://api.budpay.com/api/s2s/transaction/initialize"
 
+    const account: any = await Account.findOne({ user: data.userId }).select("user")
+
     try {
         // get card details
         const { amount, number, expiryMonth, expiryYear, cvv, pin } = req.body
+
         const budData = {
             data: { number, expiryMonth, expiryYear, cvv },
             reference
@@ -52,7 +58,7 @@ export const fundWallet = async(req:Request, res:Response) => {
         const resInfo = resp.data
         console.log(resInfo)
         return res.status(StatusCodes.OK).json({ resInfo })
-    } catch(error:any) {
+    } catch( error: any ) {
         res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(error.message)
         console.error(error)
     }
