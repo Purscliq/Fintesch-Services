@@ -1,4 +1,4 @@
-import { Account } from "../../models/Account"
+import { Wallet} from "../../models/Wallet"
 import {Request, Response} from 'express'
 import axios from "axios"
 import {config} from "dotenv"
@@ -9,7 +9,7 @@ const budKey = process.env.bud_key as string
 
 export const viewAllAccounts = async ( req: Request, res: Response ) => {
     try {
-        const account = await Account.find()
+        const account = await Wallet.find()
             .select( "firstName lastName email" )
 
         if(!account) {
@@ -26,7 +26,7 @@ export const viewAllAccounts = async ( req: Request, res: Response ) => {
 // VIEW ONE ACCOUNT
 export const viewAccount = async ( req: Request, res: Response ) => {
     try {
-        const account = await Account.findOne({ _id: req.params.id }).select( "firstName lastName email" )
+        const account = await Wallet.findOne({ _id: req.params.id }).select( "firstName lastName email" )
 
         if(!account) {
             return res.send("Could not retrieve any account")
@@ -41,7 +41,7 @@ export const viewAccount = async ( req: Request, res: Response ) => {
 
 export const activateaccount = async ( req: Request, res: Response ) => {
     try {
-        const account = await Account.findOne({ _id: req.params.id })
+        const account = await Wallet.findOne({ _id: req.params.id })
 
         if(!account) {
             return res.send("Could not retrieve any accounts")
@@ -62,7 +62,7 @@ export const activateaccount = async ( req: Request, res: Response ) => {
 
 export const deactivateAccount = async ( req: Request, res: Response ) => {
     try {
-        const account = await Account.findOne({ _id: req.params.id })
+        const account = await Wallet.findOne({ _id: req.params.id })
 
         if(!account) {
             return res.send("Could not retrieve any account")
@@ -84,7 +84,7 @@ export const deactivateAccount = async ( req: Request, res: Response ) => {
 
 export const closeAccount = async ( req: Request, res: Response ) => {
     try {
-        const account = await Account.findOne({ _id: req.params.id })
+        const account = await Wallet.findOne({ _id: req.params.id })
 
         if(!account) {
             return res.send("Could not retrieve any account")

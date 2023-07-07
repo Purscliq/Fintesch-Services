@@ -4,14 +4,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getWalletBalance = exports.closeAccount = exports.deactivateAccount = exports.activateaccount = exports.viewAccount = exports.viewAllAccounts = void 0;
-const Account_1 = require("../../models/Account");
+const Wallet_1 = require("../../models/Wallet");
 const axios_1 = __importDefault(require("axios"));
 const dotenv_1 = require("dotenv");
 (0, dotenv_1.config)();
 const budKey = process.env.bud_key;
 const viewAllAccounts = async (req, res) => {
     try {
-        const account = await Account_1.Account.find()
+        const account = await Wallet_1.Wallet.find()
             .select("firstName lastName email");
         if (!account) {
             return res.send("Could not retrieve any account");
@@ -27,7 +27,7 @@ exports.viewAllAccounts = viewAllAccounts;
 // VIEW ONE ACCOUNT
 const viewAccount = async (req, res) => {
     try {
-        const account = await Account_1.Account.findOne({ _id: req.params.id }).select("firstName lastName email");
+        const account = await Wallet_1.Wallet.findOne({ _id: req.params.id }).select("firstName lastName email");
         if (!account) {
             return res.send("Could not retrieve any account");
         }
@@ -41,7 +41,7 @@ const viewAccount = async (req, res) => {
 exports.viewAccount = viewAccount;
 const activateaccount = async (req, res) => {
     try {
-        const account = await Account_1.Account.findOne({ _id: req.params.id });
+        const account = await Wallet_1.Wallet.findOne({ _id: req.params.id });
         if (!account) {
             return res.send("Could not retrieve any accounts");
         }
@@ -60,7 +60,7 @@ const activateaccount = async (req, res) => {
 exports.activateaccount = activateaccount;
 const deactivateAccount = async (req, res) => {
     try {
-        const account = await Account_1.Account.findOne({ _id: req.params.id });
+        const account = await Wallet_1.Wallet.findOne({ _id: req.params.id });
         if (!account) {
             return res.send("Could not retrieve any account");
         }
@@ -79,7 +79,7 @@ const deactivateAccount = async (req, res) => {
 exports.deactivateAccount = deactivateAccount;
 const closeAccount = async (req, res) => {
     try {
-        const account = await Account_1.Account.findOne({ _id: req.params.id });
+        const account = await Wallet_1.Wallet.findOne({ _id: req.params.id });
         if (!account) {
             return res.send("Could not retrieve any account");
         }

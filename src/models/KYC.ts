@@ -18,58 +18,66 @@ const KYCSchema = new Schema<KYC>({
         trim: true,
         required: true
     },
-    otherName: {
+    otherNames: {
         type: String,
-        trim: true
+        trim: true,
+        default: ""
     },
     phoneNumber: {
         type: String,
-        unique: true,
-        // required: true,
+        unique: true
       },
     BVN: {
         type: String,
         unique: true,
         required: true
     },
-    address: {
-        type: String,
-        // required: true
+    country: {
+        type: String
+    },
+    state: {
+        type: String
+    },
+    city: {
+        type: String 
+    },
+    street: {
+        type: String
+    },
+    postalCode: {
+        type: String
     },
     gender: {
-      type: String,
-      // required: true
+      type: String
     },
     nationality: {
-        type: String,
-        // required: true
+        type: String
     },
     idType: {
         type: String,
-        // required: true,
     },
     idNumber: {
         type: Number,
         // required: true,
         unique: true
     },
-    issueDate: {
-        type: Date,
-        // required: true
-    },
     expiryDate: {
         type: Date,
         // required: true
     },
-    dateOfBirth: {
-      type: String,
+    DOB: {
+      type: String
     },
     OTP: {
         type: Number
     },
     status: {
-        type: Boolean,
-        default: false
+        type: String,
+        enum: {
+            values: ["active", "inactive"], 
+            message: "{values} not supported"
+        },
+        default: 'inactive'
       }, 
   },
 

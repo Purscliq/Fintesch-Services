@@ -35,21 +35,23 @@ const cors_1 = __importDefault(require("cors"));
 (0, dotenv_1.config)();
 const app = (0, express_1.default)();
 // ROUTES
-const authRoute_1 = __importDefault(require("./src/routes/clientRoute/authRoute"));
-const forgotPasswordRoute_1 = __importDefault(require("./src/routes/forgotPasswordRoute"));
-const changePasswordRoute_1 = __importDefault(require("./src/routes/changePasswordRoute"));
-const profileManagementRoute_1 = __importDefault(require("./src/routes/clientRoute/profileManagementRoute"));
-const accountManagementRoute_1 = __importDefault(require("./src/routes/clientRoute/accountManagementRoute"));
-const transactionRoute_1 = __importDefault(require("./src/routes/clientRoute/transactionRoute"));
-const kycVerificationRoute_1 = __importDefault(require("./src/routes/clientRoute/kycVerificationRoute"));
-const quickServicesRoute_1 = __importDefault(require("./src/routes/clientRoute/quickServicesRoute"));
-const accountmanagementRoute_1 = __importDefault(require("./src/routes/adminRoute/accountmanagementRoute"));
-const transactionManagementRoute_1 = __importDefault(require("./src/routes/adminRoute/transactionManagementRoute"));
-const userManagementRoute_1 = __importDefault(require("./src/routes/adminRoute/userManagementRoute"));
-const cardManagementRoute_1 = __importDefault(require("./src/routes/adminRoute/cardManagementRoute"));
+const auth_route_1 = __importDefault(require("./src/routes/clientRoute/auth_route"));
+const forgot_password_route_1 = __importDefault(require("./src/routes/forgot_password_route"));
+const change_password_route_1 = __importDefault(require("./src/routes/change_password_route"));
+const profile_management_route_1 = __importDefault(require("./src/routes/clientRoute/profile_management_route"));
+const wallet_management_route_1 = __importDefault(require("./src/routes/clientRoute/wallet_management_route"));
+const transaction_route_1 = __importDefault(require("./src/routes/clientRoute/transaction_route"));
+const kyc_verification_route_1 = __importDefault(require("./src/routes/clientRoute/kyc_verification_route"));
+const quickservices_route_1 = __importDefault(require("./src/routes/clientRoute/quickservices_route"));
+const wallet_management_route_2 = __importDefault(require("./src/routes/adminRoute/wallet_management_route"));
+const transaction_management_route_1 = __importDefault(require("./src/routes/adminRoute/transaction_management_route"));
+const user_management_route_1 = __importDefault(require("./src/routes/adminRoute/user_management_route"));
+const card_management_route_1 = __importDefault(require("./src/routes/adminRoute/card_management_route"));
+const updateBalance_route_1 = __importDefault(require("./src/routes/clientRoute/updateBalance_route"));
 // CUSTOM MIDDLEWARES
 const authenticate_1 = require("./middlewares/authenticate");
 const checkAdmin_1 = require("./middlewares/checkAdmin");
+const not_found_1 = require("./middlewares/not_found");
 // DATABASE CONNECTIONS
 const connect_1 = require("./config/connect");
 // CONNECT TO PORT
@@ -59,21 +61,23 @@ app.use((0, cookie_parser_1.default)());
 app.use((0, express_1.json)());
 app.use((0, express_1.urlencoded)({ extended: true }));
 app.use((0, cors_1.default)());
-//MOUNT ROUTES
-app.use("/auth", authRoute_1.default);
-app.use("/pwd/reset", forgotPasswordRoute_1.default);
+app.use(not_found_1.notFound);
+// MOUNT ROUTES
+app.use("/auth", auth_route_1.default);
+app.use("/pwd/reset", forgot_password_route_1.default);
 app.use("/api", authenticate_1.verifyToken);
 app.use("api/admin", checkAdmin_1.isAdmin);
-app.use("/api/pwd/reset", changePasswordRoute_1.default);
-app.use("/api/profile", profileManagementRoute_1.default);
-app.use("/api/verifyId", kycVerificationRoute_1.default);
-app.use("/api/account", accountManagementRoute_1.default);
-app.use("/api/transaction", transactionRoute_1.default);
-app.use("/api/services", quickServicesRoute_1.default);
-app.use("/api/admin/users", userManagementRoute_1.default);
-app.use("/api/admin/accounts", accountmanagementRoute_1.default);
-app.use("/api/admin/transactions", transactionManagementRoute_1.default);
-app.use("/api/admin/cards", cardManagementRoute_1.default);
+app.use("/api/pwd/reset", change_password_route_1.default);
+app.use("/api/profile", profile_management_route_1.default);
+app.use("/api/kyc", kyc_verification_route_1.default);
+app.use("/api/wallet", wallet_management_route_1.default);
+app.use("/api/transaction", transaction_route_1.default);
+app.use("/api/transaction/update_bal", updateBalance_route_1.default);
+app.use("/api/services", quickservices_route_1.default);
+app.use("/api/admin/users", user_management_route_1.default);
+app.use("/api/admin/wallet", wallet_management_route_2.default);
+app.use("/api/admin/transactions", transaction_management_route_1.default);
+app.use("/api/admin/cards", card_management_route_1.default);
 // SERVER CONNECTION FUNCTION
 const server = async () => {
     try {

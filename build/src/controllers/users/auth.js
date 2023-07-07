@@ -30,8 +30,7 @@ class Authenticate {
         this.signUp = async (req, res) => {
             try {
                 const { email, password, confirmPassword } = req.body;
-                const userCount = await User_1.User.countDocuments({});
-                const checksIfUserExists = await User_1.User.findOne({ email });
+                const checksIfUserExists = await User_1.User.findOne({ email }).select("email");
                 if (checksIfUserExists) {
                     return res.status(http_status_codes_1.StatusCodes.BAD_REQUEST).send('This user already exists.');
                 }
@@ -40,9 +39,6 @@ class Authenticate {
                 }
                 const securePassword = await bcrypt_1.default.hash(password, bcrypt_1.default.genSaltSync(10));
                 const user = new User_1.User({ email, password: securePassword });
-                if (userCount === 0) {
-                    user.role = "Admin";
-                }
                 user.OTP = (0, generateOTP_1.generateOTP)();
                 await user.save();
                 // Send OTP to Mail
@@ -55,6 +51,11 @@ class Authenticate {
                     html: mailText
                 };
                 (0, sendMail_1.sendMail)(domain, key, messageData);
+                const userCount = await User_1.User.countDocuments({});
+                if (userCount === 0) {
+                    user.role = "Admin";
+                    await user.save();
+                }
                 return res.status(http_status_codes_1.StatusCodes.OK).json({
                     Success: "USER PROFILE CREATED SUCCESSFULLY!",
                     message: "A One-Time Password has been sent to your mail",
@@ -70,7 +71,7 @@ class Authenticate {
         this.signIn = async (req, res) => {
             try {
                 const { email, password } = req.body;
-                const profile = await User_1.User.findOne({ email });
+                const profile = await User_1.User.findOne({ email }).select("email password");
                 if (!profile)
                     return res.status(http_status_codes_1.StatusCodes.NOT_FOUND).json({ message: "This user is " + http_status_codes_1.ReasonPhrases.NOT_FOUND });
                 const isPasswordMatch = await bcrypt_1.default.compare(password, profile.password);
