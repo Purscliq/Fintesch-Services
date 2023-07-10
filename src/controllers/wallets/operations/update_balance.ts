@@ -65,7 +65,8 @@ export const updateBalance = async(req: Request, res: Response) => {
         } 
         else if(notify === "payout" && notifyType === "successful") {
             // verify transaction
-            // const transaction: any = await Transaction.findOne({ user: userPayload.userId });
+            const transaction: any = await Transaction.findOne({ user: userPayload.userId });
+
             const response = await axios.get(payOutUrl, { headers });
 
             const result = response.data;
@@ -76,16 +77,10 @@ export const updateBalance = async(req: Request, res: Response) => {
                 throw("Invalid transaction")
             }
 
-            const transactionData = {
-                user: userPayload.userId,
-                ...data
-            }
-
-             // Save transfer details to database
-             const transaction = new Transaction(transactionData);
-
-             console.log(transaction);
-           
+            transaction.status = result.data.status;
+            console.log(transaction);
+            
+            // Save transfer details to database
             await transaction.save();
 
             return res.status(StatusCodes.OK).json( { 

@@ -55,7 +55,7 @@ export const createAccount = async (req: Request, res: Response) => {
   const userPayload = decodeToken(authHeader.split(" ")[1]) as JwtPayload;
   const url = "https://api.budpay.com/api/v2/dedicated_virtual_account";
   const customerCode = await createCustomer(req, res);
-  
+
   try {
     // make axios call to API to create account
     // @params url, customer_code, headers
@@ -66,6 +66,10 @@ export const createAccount = async (req: Request, res: Response) => {
     );
 
     const info = response.data;
+
+    if(!info || info.status !== true) {
+      return res.status(StatusCodes.BAD_REQUEST).json({ error: "Transaction Failed" });
+    }
 
     // account model payload
     const accountData = {

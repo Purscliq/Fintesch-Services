@@ -27,12 +27,10 @@ const walletSchema = new Schema<Wallet>({
     },
     currency: {
         type: String,
-        required: true,
-        default: "NGN"
+        required: true
     },
     status: {
-        type: String,
-        default: "active"
+        type: String
     },
     PIN: {
         type: Number,
@@ -41,9 +39,9 @@ const walletSchema = new Schema<Wallet>({
     },
     customer: {
         id: Number,
-        first_name:  String,
-        last_name:  String,
-        email:  String,
+        first_name: String,
+        last_name: String,
+        email: String,
         customer_code: String,
         phone: String
     },
