@@ -107,7 +107,10 @@ export const sendMoney = async(req:Request, res:Response) => {
         const info = response.data;
 
         if(!info || info.status !== true) {
-            return res.status(StatusCodes.BAD_REQUEST).json({ error: "Transaction Failed" });
+            return res.status(StatusCodes.BAD_REQUEST).json({ 
+                error: "Transaction Failed", 
+                info 
+            });
         }
 
         // Save transaction details to Transaction collection

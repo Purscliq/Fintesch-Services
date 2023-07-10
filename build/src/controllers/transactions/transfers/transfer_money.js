@@ -96,7 +96,10 @@ const sendMoney = async (req, res) => {
         const response = await axios_1.default.post(url, transferData, { headers });
         const info = response.data;
         if (!info || info.status !== true) {
-            return res.status(http_status_codes_1.StatusCodes.BAD_REQUEST).json({ error: "Transaction Failed" });
+            return res.status(http_status_codes_1.StatusCodes.BAD_REQUEST).json({
+                error: "Transaction Failed",
+                info
+            });
         }
         // Save transaction details to Transaction collection
         const { data } = info;
