@@ -26,7 +26,7 @@ export const updateBalance = async(req: Request, res: Response) => {
     const payOutUrl = `https://budpay.com/api/v2/payout/:${data.reference}`
 
     try{
-        if(notify === "transaction" && notifyType === "successful") {
+        if(notify === "transaction" && notifyType === "successful" && data.type === "dedicated_nuban") {
             const transactionData = {
                 user: userPayload.userId,
                 ...data

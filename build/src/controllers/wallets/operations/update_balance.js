@@ -23,7 +23,7 @@ const updateBalance = async (req, res) => {
     const verifyUrl = `//api.budpay.com/api/v2/transaction/verify/:${data.reference}`;
     const payOutUrl = `https://budpay.com/api/v2/payout/:${data.reference}`;
     try {
-        if (notify === "transaction" && notifyType === "successful") {
+        if (notify === "transaction" && notifyType === "successful" && data.type === "dedicated_nuban") {
             const transactionData = {
                 user: userPayload.userId,
                 ...data
