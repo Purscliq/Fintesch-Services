@@ -7,7 +7,7 @@ exports.createAccount = exports.createCustomer = void 0;
 const dotenv_1 = require("dotenv");
 const axios_1 = __importDefault(require("axios"));
 const http_status_codes_1 = require("http-status-codes");
-const decodeToken_1 = require("../utils/decodeToken");
+const decode_token_1 = require("../utils/decode_token");
 const KYC_1 = require("../../models/KYC");
 const Wallet_1 = require("../../models/Wallet");
 (0, dotenv_1.config)();
@@ -22,7 +22,7 @@ const createCustomer = async (req, res) => {
     try {
         // Get user data from auth token
         const authHeader = req.headers.authorization;
-        const userPayload = (0, decodeToken_1.decodeToken)(authHeader.split(" ")[1]);
+        const userPayload = (0, decode_token_1.decodeToken)(authHeader.split(" ")[1]);
         const url = "https://api.budpay.com/api/v2/customer";
         const kyc = await KYC_1.KYC.findOne({ user: userPayload.userId }).select("firstName lastName phoneNumber status");
         if (!kyc)
@@ -50,7 +50,7 @@ exports.createCustomer = createCustomer;
 // Create account
 const createAccount = async (req, res) => {
     const authHeader = req.headers.authorization;
-    const userPayload = (0, decodeToken_1.decodeToken)(authHeader.split(" ")[1]);
+    const userPayload = (0, decode_token_1.decodeToken)(authHeader.split(" ")[1]);
     const url = "https://api.budpay.com/api/v2/dedicated_virtual_account";
     const customerCode = await (0, exports.createCustomer)(req, res);
     try {
@@ -58,6 +58,9 @@ const createAccount = async (req, res) => {
         // @params url, customer_code, headers
         const response = await axios_1.default.post(url, { customer: customerCode }, { headers });
         const info = response.data;
+        if (!info || info.status !== true) {
+            return res.status(http_status_codes_1.StatusCodes.BAD_REQUEST).json({ error: "Transaction Failed" });
+        }
         // account model payload
         const accountData = {
             user: userPayload.userId,

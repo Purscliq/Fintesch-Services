@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.bvnVerification = void 0;
 const dotenv_1 = require("dotenv");
 const axios_1 = __importDefault(require("axios"));
-const decodeToken_1 = require("../utils/decodeToken");
+const decode_token_1 = require("../utils/decode_token");
 const KYC_1 = require("../../models/KYC");
 const http_status_codes_1 = require("http-status-codes");
 (0, dotenv_1.config)();
@@ -16,7 +16,7 @@ const liveKey = process.env.verifyMe_key;
 const bvnVerification = async (req, res) => {
     // Get user token from auth header
     const authHeader = req.headers.authorization;
-    const userPayload = (0, decodeToken_1.decodeToken)(authHeader.split(" ")[1]);
+    const userPayload = (0, decode_token_1.decodeToken)(authHeader.split(" ")[1]);
     // Get KYC details
     const { firstName, lastName, BVN, DOB, otherName, phoneNumber, address, gender, nationality, idType, idNumber, expiryDate } = req.body;
     // PERFORM KYC

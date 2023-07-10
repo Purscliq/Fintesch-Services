@@ -3,11 +3,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Transaction = void 0;
 const mongoose_1 = require("mongoose");
 const transactionSchema = new mongoose_1.Schema({
-    user: { type: mongoose_1.Schema.Types.ObjectId, ref: "User", required: true },
+    user: { type: mongoose_1.Schema.Types.ObjectId, ref: "User" },
     id: Number,
     reference: { type: String, unique: true },
     sessionid: String,
-    currency: { type: String, default: "NGN" },
+    currency: String,
     amount: String,
     fee: String,
     type: String,
@@ -18,7 +18,7 @@ const transactionSchema = new mongoose_1.Schema({
     settled_by: String,
     subaccount: String,
     narration: String,
-    status: { type: String, default: "pending" },
+    status: String,
     channel: String,
     customer: Object,
     message: String,

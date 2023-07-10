@@ -28,8 +28,8 @@ const userSchema = new mongoose_1.Schema({
     },
     role: {
         type: String,
-        enum: { values: ['User', 'Admin'], message: '{VALUE} is not supported' },
-        default: 'User'
+        enum: { values: ['Individual', 'Business', 'Admin'], message: '{VALUE} is not supported' },
+        default: 'Individual'
     },
     OTP: Number,
     status: {

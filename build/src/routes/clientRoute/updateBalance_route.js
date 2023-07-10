@@ -5,7 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 // IMPORT ROUTER
 const express_1 = __importDefault(require("express"));
 const router = express_1.default.Router();
-const updateBalance_1 = require("../../controllers/wallets/operations/updateBalance");
+const update_balance_1 = require("../../controllers/wallets/operations/update_balance");
 router.route("/")
-    .patch(updateBalance_1.updateBalance);
+    .patch(update_balance_1.updateBalance);
 module.exports = router;

@@ -4,10 +4,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.createCard = void 0;
+// IMPORT DEPENDENCIES
 const dotenv_1 = require("dotenv");
 const axios_1 = __importDefault(require("axios"));
 const http_status_codes_1 = require("http-status-codes");
-const decodeToken_1 = require("../utils/decodeToken");
+const decode_token_1 = require("../utils/decode_token");
 const Card_1 = require("../../models/Card");
 const Wallet_1 = require("../../models/Wallet");
 const create_cardholder_1 = require("./create_cardholder");
@@ -18,9 +19,10 @@ const headers = {
     "content-type": "application/json",
     accept: 'application/json'
 };
+// CREATE CARD FUNCTION
 const createCard = async (req, res) => {
     const authHeader = req.headers.authorization;
-    const userPayload = (0, decodeToken_1.decodeToken)(authHeader.split(" ")[1]);
+    const userPayload = (0, decode_token_1.decodeToken)(authHeader.split(" ")[1]);
     const wallet = await Wallet_1.Wallet.findOne({ user: userPayload.userId }).select("id customer");
     if (!wallet)
         throw Error;

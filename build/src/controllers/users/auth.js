@@ -10,8 +10,8 @@ const http_status_codes_1 = require("http-status-codes");
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const User_1 = require("../../models/User");
-const generateOTP_1 = require("../utils/generateOTP");
-const sendMail_1 = require("../utils/sendMail");
+const generate_otp_1 = require("../utils/generate_otp");
+const send_mail_1 = require("../utils/send_mail");
 (0, dotenv_1.config)();
 const secretKey = process.env.secretKey;
 const domain = process.env.DOMAIN;
@@ -39,7 +39,7 @@ class Authenticate {
                 }
                 const securePassword = await bcrypt_1.default.hash(password, bcrypt_1.default.genSaltSync(10));
                 const user = new User_1.User({ email, password: securePassword });
-                user.OTP = (0, generateOTP_1.generateOTP)();
+                user.OTP = (0, generate_otp_1.generateOTP)();
                 await user.save();
                 // Send OTP to Mail
                 const mailText = `<p> Welcome to e-Tranzact. Your One-Time password for your e-Tranzact account is ${user.OTP}.
@@ -50,7 +50,7 @@ class Authenticate {
                     subject: 'Verify Your Account',
                     html: mailText
                 };
-                (0, sendMail_1.sendMail)(domain, key, messageData);
+                (0, send_mail_1.sendMail)(domain, key, messageData);
                 const userCount = await User_1.User.countDocuments({});
                 if (userCount === 0) {
                     user.role = "Admin";

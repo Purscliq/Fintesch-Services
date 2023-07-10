@@ -6,13 +6,13 @@ const dotenv_1 = require("dotenv");
 const User_1 = require("../../models/User");
 const auth_1 = require("./auth");
 const http_status_codes_1 = require("http-status-codes");
-const decodeToken_1 = require("../utils/decodeToken");
+const decode_token_1 = require("../utils/decode_token");
 (0, dotenv_1.config)();
 // GET YOUR PROFILE
 const viewMyProfile = async (req, res) => {
     try {
         const authHeader = req.headers.authorization;
-        const data = (0, decodeToken_1.decodeToken)(authHeader.split(" ")[1]);
+        const data = (0, decode_token_1.decodeToken)(authHeader.split(" ")[1]);
         const myProfile = await User_1.User.findOne({ _id: data.userId });
         console.log(myProfile);
         return res.status(http_status_codes_1.StatusCodes.OK)
@@ -28,7 +28,7 @@ exports.viewMyProfile = viewMyProfile;
 const editMyProfile = async (req, res) => {
     try {
         const authHeader = req.headers.authorization;
-        const data = (0, decodeToken_1.decodeToken)(authHeader.split(" ")[1]);
+        const data = (0, decode_token_1.decodeToken)(authHeader.split(" ")[1]);
         const updatedProfile = await User_1.User.findOneAndUpdate({ _id: data.userId }, req.body, {
             new: true,
             runValidators: true
@@ -50,7 +50,7 @@ exports.editMyProfile = editMyProfile;
 const deleteMyProfile = async (req, res) => {
     try {
         const authHeader = req.headers.authorization;
-        const data = (0, decodeToken_1.decodeToken)(authHeader.split(" ")[1]);
+        const data = (0, decode_token_1.decodeToken)(authHeader.split(" ")[1]);
         await User_1.User.findOneAndDelete({ _id: data.userId });
         return res.status(200).json({ Success: "Your account has been deleted" });
     }

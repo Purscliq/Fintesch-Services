@@ -10,6 +10,6 @@ const router = express_1.default.Router();
 // router.route("/create-customer").post(createCustomer)
 router.route("/create-account").post(create_wallet_1.createAccount);
 router.route("/balance").get(check_wallet_balance_1.getWalletBalance);
-router.route("/pin").patch(set_wallet_PIN_1.setTransactionPIN);
-router.route("/change_pin").patch(set_wallet_PIN_1.changeTransactionPIN);
+router.route("/pin").put(set_wallet_PIN_1.setTransactionPIN);
+router.route("/change_pin").put(set_wallet_PIN_1.changeTransactionPIN);
 module.exports = router;

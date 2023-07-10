@@ -7,8 +7,8 @@ exports.fundWallet = void 0;
 const dotenv_1 = require("dotenv");
 const axios_1 = __importDefault(require("axios"));
 const http_status_codes_1 = require("http-status-codes");
-const generateRef_1 = require("../../utils/generateRef");
-const decodeToken_1 = require("../../utils/decodeToken");
+const generate_ref_1 = require("../../utils/generate_ref");
+const decode_token_1 = require("../../utils/decode_token");
 const Wallet_1 = require("../../../models/Wallet");
 (0, dotenv_1.config)();
 const budKey = process.env.bud_key;
@@ -20,8 +20,8 @@ const headers = {
 // ENCRYPT CARD
 const fundWallet = async (req, res) => {
     const authHeader = req.headers.authorization;
-    const data = (0, decodeToken_1.decodeToken)(authHeader.split(" ")[1]);
-    const reference = (0, generateRef_1.generateRefID)();
+    const data = (0, decode_token_1.decodeToken)(authHeader.split(" ")[1]);
+    const reference = (0, generate_ref_1.generateRefID)();
     const url = "https://api.budpay.com/api/s2s/test/encryption";
     const payUrl = "https://api.budpay.com/api/s2s/transaction/initialize";
     const wallet = await Wallet_1.Wallet.findOne({ user: data.userId }).select("user");

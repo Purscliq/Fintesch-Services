@@ -50,8 +50,7 @@ const card_management_route_1 = __importDefault(require("./src/routes/adminRoute
 const updateBalance_route_1 = __importDefault(require("./src/routes/clientRoute/updateBalance_route"));
 // CUSTOM MIDDLEWARES
 const authenticate_1 = require("./middlewares/authenticate");
-const checkAdmin_1 = require("./middlewares/checkAdmin");
-const not_found_1 = require("./middlewares/not_found");
+const check_admin_1 = require("./middlewares/check_admin");
 // DATABASE CONNECTIONS
 const connect_1 = require("./config/connect");
 // CONNECT TO PORT
@@ -61,12 +60,12 @@ app.use((0, cookie_parser_1.default)());
 app.use((0, express_1.json)());
 app.use((0, express_1.urlencoded)({ extended: true }));
 app.use((0, cors_1.default)());
-app.use(not_found_1.notFound);
+// app.use(notFound);
 // MOUNT ROUTES
 app.use("/auth", auth_route_1.default);
 app.use("/pwd/reset", forgot_password_route_1.default);
 app.use("/api", authenticate_1.verifyToken);
-app.use("api/admin", checkAdmin_1.isAdmin);
+app.use("api/admin", check_admin_1.isAdmin);
 app.use("/api/pwd/reset", change_password_route_1.default);
 app.use("/api/profile", profile_management_route_1.default);
 app.use("/api/kyc", kyc_verification_route_1.default);

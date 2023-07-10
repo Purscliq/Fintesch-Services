@@ -7,7 +7,7 @@ exports.createCardHolder = void 0;
 const dotenv_1 = require("dotenv");
 const axios_1 = __importDefault(require("axios"));
 const http_status_codes_1 = require("http-status-codes");
-const decodeToken_1 = require("../utils/decodeToken");
+const decode_token_1 = require("../utils/decode_token");
 const KYC_1 = require("../../models/KYC");
 (0, dotenv_1.config)();
 const sudoKey = process.env.sudoKey;
@@ -18,7 +18,7 @@ const headers = {
 };
 const createCardHolder = async (req, res) => {
     const authHeader = req.headers.authorization;
-    const userPayload = (0, decodeToken_1.decodeToken)(authHeader.split(" ")[1]);
+    const userPayload = (0, decode_token_1.decodeToken)(authHeader.split(" ")[1]);
     const url = 'https://api.sandbox.sudo.cards/customers';
     try {
         const holder = await KYC_1.KYC.findOne({ user: userPayload.userId }).populate("user");

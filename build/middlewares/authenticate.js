@@ -23,7 +23,7 @@ const verifyToken = async (req, res, next) => {
         return next();
     }
     catch (err) {
-        throw Error("An error occured with token verification. Authentication failed");
+        throw Error("An unexpected error occured with token verification");
     }
 };
 exports.verifyToken = verifyToken;
