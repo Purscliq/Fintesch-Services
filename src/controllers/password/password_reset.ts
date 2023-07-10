@@ -5,8 +5,8 @@ import { JwtPayload } from 'jsonwebtoken'
 import bcrypt from 'bcrypt'
 import { ReasonPhrases, StatusCodes } from 'http-status-codes'
 import { User } from '../../models/User'
-import { verifyResetEmailAndSendOTP } from './sendPasswordResetOTP'
-import { decodeToken } from '../utils/decodeToken'
+import { verifyResetEmailAndSendOTP } from './send_password_reset_otp'
+import { decodeToken } from '../utils/decode_token'
 
 config();
 

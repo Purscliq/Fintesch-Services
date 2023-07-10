@@ -3,7 +3,7 @@ import axios from "axios";
 import { Request, Response } from "express";
 import { JwtPayload } from "jsonwebtoken";
 import { StatusCodes } from "http-status-codes";
-import { decodeToken } from "../utils/decodeToken";
+import { decodeToken } from "../utils/decode_token";
 import { KYC } from "../../models/KYC";
 import { Wallet } from "../../models/Wallet";
 import { Transaction } from "../../models/Transaction";
@@ -55,6 +55,7 @@ export const createAccount = async (req: Request, res: Response) => {
   const userPayload = decodeToken(authHeader.split(" ")[1]) as JwtPayload;
   const url = "https://api.budpay.com/api/v2/dedicated_virtual_account";
   const customerCode = await createCustomer(req, res);
+  
   try {
     // make axios call to API to create account
     // @params url, customer_code, headers
@@ -63,6 +64,7 @@ export const createAccount = async (req: Request, res: Response) => {
       { customer: customerCode },
       { headers }
     );
+
     const info = response.data;
 
     // account model payload

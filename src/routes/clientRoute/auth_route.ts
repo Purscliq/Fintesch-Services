@@ -2,8 +2,8 @@
 import express from 'express'
 const router = express.Router()
 import { Authenticate } from '../../controllers/users/auth' 
-import { verifyOTP } from '../../controllers/utils/verifyOTP'
-import { resendOTP } from '../../controllers/utils/resendOTP'
+import { verifyOTP } from '../../controllers/utils/verify_otp'
+import { resendOTP } from '../../controllers/utils/resend_otp'
 
 const authenticate = new Authenticate()
 const {signUp, signIn} = authenticate

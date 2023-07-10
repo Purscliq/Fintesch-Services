@@ -3,7 +3,7 @@ import axios from 'axios'
 import { Request, Response } from "express"
 import { JwtPayload } from 'jsonwebtoken'
 import { StatusCodes } from 'http-status-codes'
-import { decodeToken } from '../utils/decodeToken'
+import { decodeToken } from '../utils/decode_token'
 import { KYC } from '../../models/KYC'
 
 config()

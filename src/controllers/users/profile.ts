@@ -4,7 +4,7 @@ import { Request, Response } from 'express'
 import { User } from "../../models/User"
 import { createToken } from "./auth"
 import { StatusCodes, ReasonPhrases } from 'http-status-codes'
-import { decodeToken } from '../utils/decodeToken'
+import { decodeToken } from '../utils/decode_token'
 import { JwtPayload } from 'jsonwebtoken'
 
 config();

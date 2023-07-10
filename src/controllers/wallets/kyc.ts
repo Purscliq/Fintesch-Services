@@ -2,7 +2,7 @@ import {config} from 'dotenv'
 import { Request, Response } from "express"
 import bcrypt from 'bcrypt'
 import axios from 'axios'
-import { decodeToken } from "../utils/decodeToken"
+import { decodeToken } from "../utils/decode_token"
 import { KYC } from "../../models/KYC"
 import { JwtPayload } from "jsonwebtoken"
 import { ReasonPhrases, StatusCodes } from "http-status-codes"

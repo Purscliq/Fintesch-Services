@@ -1,10 +1,10 @@
 // IMPORT DEPENDENCIES
 import { config } from 'dotenv'
 import { Request, Response } from 'express'
-import { generateOTP } from '../utils/generateOTP'
+import { generateOTP } from '../utils/generate_otp'
 import { StatusCodes } from 'http-status-codes'
 import { User } from '../../models/User'
-import { sendMail } from '../utils/sendMail'
+import { sendMail } from '../utils/send_mail'
 
 config();
 

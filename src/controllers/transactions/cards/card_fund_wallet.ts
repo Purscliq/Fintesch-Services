@@ -3,8 +3,8 @@ import { Request, Response } from "express"
 import { JwtPayload } from 'jsonwebtoken'
 import axios from 'axios'
 import { StatusCodes } from 'http-status-codes'
-import { generateRefID } from '../../utils/generateRef'
-import { decodeToken } from '../../utils/decodeToken'
+import { generateRefID } from '../../utils/generate_ref'
+import { decodeToken } from '../../utils/decode_token'
 import { Wallet } from '../../../models/Wallet'
 
 config()

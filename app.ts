@@ -26,7 +26,7 @@ import updateBalance from './src/routes/clientRoute/updateBalance_route'
 
 // CUSTOM MIDDLEWARES
 import { verifyToken } from './middlewares/authenticate'
-import { isAdmin } from './middlewares/checkAdmin'
+import { isAdmin } from './middlewares/check_admin'
 import { notFound } from './middlewares/not_found'
 
 // DATABASE CONNECTIONS
@@ -40,7 +40,7 @@ app.use(cookieParser())
 app.use(json())
 app.use(urlencoded({ extended: true }))
 app.use(cors())
-app.use(notFound);
+// app.use(notFound);
 
 // MOUNT ROUTES
 app.use("/auth", authRoute)

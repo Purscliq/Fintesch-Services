@@ -5,7 +5,7 @@ import axios from 'axios';
 import { StatusCodes } from 'http-status-codes';
 import { Transaction } from '../../../models/Transaction';
 import { Wallet } from '../../../models/Wallet';
-import { decodeToken } from '../../utils/decodeToken';
+import { decodeToken } from '../../utils/decode_token';
 import { JwtPayload } from 'jsonwebtoken';
 // import { generateRefID } from '../utils/generateRef';
 
@@ -92,8 +92,10 @@ export const sendMoney = async(req:Request, res:Response) => {
             return res.status(StatusCodes.NOT_FOUND).send("This account does not exist")
 
         // Verify that Transaction PIN is correct
-        if(PIN !== wallet.PIN) 
-                throw("Wrong PIN")
+        if(PIN !== wallet.PIN) {
+            res.status(StatusCodes.FORBIDDEN).json({ error: "Wrong PIN" });
+            throw("Wrong PIN");
+        }
         
         // Check for sufficient balance to carry out Transcation
         if((wallet.balance) < (parseInt(amount) + 20.00))
@@ -108,9 +110,10 @@ export const sendMoney = async(req:Request, res:Response) => {
             throw("Transaction failed")
         }
 
-         // Save transaction details to Transaction collection
+        // Save transaction details to Transaction collection
         const { data } = info;
-        
+        console.log(data);
+
         await Transaction.create({
             user: userPayload.userId,
             ...data

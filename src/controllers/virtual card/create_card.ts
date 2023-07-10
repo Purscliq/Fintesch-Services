@@ -1,9 +1,10 @@
+// IMPORT DEPENDENCIES
 import { config } from 'dotenv';
 import { Request, Response } from "express";
 import { JwtPayload } from 'jsonwebtoken';
 import axios from 'axios';
 import { StatusCodes } from 'http-status-codes';
-import { decodeToken } from '../utils/decodeToken';
+import { decodeToken } from '../utils/decode_token';
 import { Card } from '../../models/Card';
 import { Wallet } from '../../models/Wallet';
 import { createCardHolder } from './create_cardholder';
@@ -17,7 +18,7 @@ const headers = {
     accept: 'application/json'
 };
 
-
+// CREATE CARD FUNCTION
 export const createCard = async(req: Request, res: Response) => {
     const authHeader = req.headers.authorization as string;
     const userPayload = decodeToken(authHeader.split(" ")[1]) as JwtPayload;

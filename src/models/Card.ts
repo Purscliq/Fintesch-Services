@@ -8,9 +8,9 @@ const cardSchema = new Schema<Card>({
         unique: true,
         required: true
     },
-    account: {
+    wallet: {
         type: Schema.Types.ObjectId,
-        ref: "Account",
+        ref: "Wallet",
         unique: true,
         required: true
     },
@@ -23,7 +23,6 @@ const cardSchema = new Schema<Card>({
     name: {
         type: String,
         unique: true
-        // required: true,
     },
     cvv: {
         type: String,
@@ -39,13 +38,12 @@ const cardSchema = new Schema<Card>({
         type: String,
         required: true
     },
-    cardType: {
+    type: {
         type: String,
         required: true,
         enum: { value: ["Verve", "MasterCard", "Visa"] },
         default: "Verve"
     },
-    OTP: Number,
     currency: {
         type: String,
         required: true,
@@ -55,7 +53,8 @@ const cardSchema = new Schema<Card>({
         type: String,
         enum: { value: ["active", "expired", "blocked"] },
         default: "active"
-    }
+    },
+    OTP: Number
   },
   { timestamps: true, strict: true }
 )

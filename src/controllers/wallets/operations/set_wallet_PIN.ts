@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { decodeToken } from "../../utils/decodeToken";
+import { decodeToken } from "../../utils/decode_token";
 import { Wallet } from "../../../models/Wallet";
 import { JwtPayload } from "jsonwebtoken";
 import { StatusCodes } from "http-status-codes";

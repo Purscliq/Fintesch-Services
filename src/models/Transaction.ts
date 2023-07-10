@@ -2,11 +2,11 @@ import { Schema, model, InferSchemaType } from 'mongoose'
 type Transaction = InferSchemaType<typeof Schema>
 
 const transactionSchema = new Schema<Transaction>({
-        user: { type: Schema.Types.ObjectId, ref: "User", required: true },
+        user: { type: Schema.Types.ObjectId, ref: "User" },
         id: Number,
         reference: { type: String, unique: true },
         sessionid: String,
-        currency: { type: String, default: "NGN" },
+        currency: String,
         amount: String,
         fee: String,
         type: String,
@@ -17,7 +17,7 @@ const transactionSchema = new Schema<Transaction>({
         settled_by: String,
         subaccount: String,
         narration: String,
-        status: { type: String, default: "pending" },
+        status: String,
         channel: String,
         customer: Object,
         message: String,

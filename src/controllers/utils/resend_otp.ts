@@ -1,10 +1,10 @@
 import { Request, Response } from "express"
 import { JwtPayload } from "jsonwebtoken"
-import { decodeToken } from "./decodeToken"
-import { generateOTP } from "./generateOTP"
+import { decodeToken } from "./decode_token"
+import { generateOTP } from "./generate_otp"
 import { User } from "../../models/User"
 import { ReasonPhrases, StatusCodes } from "http-status-codes"
-import { sendMail } from "./sendMail"
+import { sendMail } from "./send_mail"
 import { config } from "dotenv"
 
 config()

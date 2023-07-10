@@ -1,6 +1,6 @@
 import {config} from 'dotenv'
 import { Request, Response } from "express"
-import { decodeToken } from "../../utils/decodeToken"
+import { decodeToken } from "../../utils/decode_token"
 import { JwtPayload } from "jsonwebtoken"
 import { StatusCodes } from "http-status-codes"
 import {Wallet} from "../../../models/Wallet"

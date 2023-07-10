@@ -9,9 +9,9 @@ const cardSchema = new mongoose_1.Schema({
         unique: true,
         required: true
     },
-    account: {
+    wallet: {
         type: mongoose_1.Schema.Types.ObjectId,
-        ref: "Account",
+        ref: "Wallet",
         unique: true,
         required: true
     },
@@ -24,7 +24,6 @@ const cardSchema = new mongoose_1.Schema({
     name: {
         type: String,
         unique: true
-        // required: true,
     },
     cvv: {
         type: String,
@@ -40,13 +39,12 @@ const cardSchema = new mongoose_1.Schema({
         type: String,
         required: true
     },
-    cardType: {
+    type: {
         type: String,
         required: true,
         enum: { value: ["Verve", "MasterCard", "Visa"] },
         default: "Verve"
     },
-    OTP: Number,
     currency: {
         type: String,
         required: true,
@@ -56,6 +54,7 @@ const cardSchema = new mongoose_1.Schema({
         type: String,
         enum: { value: ["active", "expired", "blocked"] },
         default: "active"
-    }
+    },
+    OTP: Number
 }, { timestamps: true, strict: true });
 exports.Card = (0, mongoose_1.model)("Card", cardSchema);

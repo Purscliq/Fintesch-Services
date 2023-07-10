@@ -2,7 +2,7 @@ import { config } from 'dotenv'
 import axios from 'axios'
 import { Request, Response } from "express" 
 import { JwtPayload } from "jsonwebtoken"
-import { decodeToken } from "../../utils/decodeToken"
+import { decodeToken } from "../../utils/decode_token"
 import { Transaction } from "../../../models/Transaction"
 import { Wallet } from "../../../models/Wallet"
 import { StatusCodes } from 'http-status-codes'
@@ -65,8 +65,7 @@ export const updateBalance = async(req: Request, res: Response) => {
         } 
         else if(notify === "payout" && notifyType === "successful") {
             // verify transaction
-            const transaction: any = await Transaction.findOne({ user: userPayload.userId });
-
+            // const transaction: any = await Transaction.findOne({ user: userPayload.userId });
             const response = await axios.get(payOutUrl, { headers });
 
             const result = response.data;
@@ -77,11 +76,21 @@ export const updateBalance = async(req: Request, res: Response) => {
                 throw("Invalid transaction")
             }
 
-            transaction.status = result.data.status;
+            const transactionData = {
+                user: userPayload.userId,
+                ...data
+            }
 
+             // Save transfer details to database
+             const transaction = new Transaction(transactionData);
+
+             console.log(transaction);
+           
             await transaction.save();
 
-            return res.status(StatusCodes.OK).json( { message: `Transaction ${transaction.status}` });
+            return res.status(StatusCodes.OK).json( { 
+                message: `Transaction ${transaction.status}` 
+            });
         }
     } catch (error: any) {
         console.log(error)

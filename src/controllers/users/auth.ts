@@ -5,8 +5,8 @@ import {StatusCodes, ReasonPhrases} from 'http-status-codes'
 import jwt, {JwtPayload} from 'jsonwebtoken'
 import bcrypt from 'bcrypt'
 import { User } from '../../models/User'
-import { generateOTP } from '../utils/generateOTP'
-import { sendMail } from '../utils/sendMail'
+import { generateOTP } from '../utils/generate_otp'
+import { sendMail } from '../utils/send_mail'
 
 config();
 

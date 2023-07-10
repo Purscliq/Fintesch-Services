@@ -8,7 +8,7 @@ const router = express.Router();
 // router.route("/create-customer").post(createCustomer)
 router.route("/create-account").post(createAccount);
 router.route("/balance").get(getWalletBalance);
-router.route("/pin").patch(setTransactionPIN);
-router.route("/change_pin").patch(changeTransactionPIN);
+router.route("/pin").put(setTransactionPIN);
+router.route("/change_pin").put(changeTransactionPIN);
 
 export = router;

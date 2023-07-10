@@ -1,3 +1,4 @@
+// IMPORT MONGOOSE.SCHEMA, MONGOOSE.MODEL, MONGOOSE.INFERSCHEMA
 import { Schema, model, InferSchemaType } from 'mongoose'
 type Wallet = InferSchemaType<typeof Schema>
 
@@ -51,5 +52,5 @@ const walletSchema = new Schema<Wallet>({
     domain: String
 })
 
-export const Wallet = model("Wallet", walletSchema)
+export const Wallet = model("Wallet", walletSchema);
 
