@@ -26,8 +26,7 @@ const walletSchema = new Schema<Wallet>({
         default: 0.00
     },
     currency: {
-        type: String,
-        required: true
+        type: String
     },
     status: {
         type: String

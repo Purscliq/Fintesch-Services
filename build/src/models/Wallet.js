@@ -27,8 +27,7 @@ const walletSchema = new mongoose_1.Schema({
         default: 0.00
     },
     currency: {
-        type: String,
-        required: true
+        type: String
     },
     status: {
         type: String
