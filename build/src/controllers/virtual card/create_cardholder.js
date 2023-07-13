@@ -27,7 +27,7 @@ const createCardHolder = async (req, res) => {
         const fullname = holder.firstName + " " + holder.firstName + " " + holder.otherNames;
         // card holder data
         const holderData = {
-            type: "individual",
+            type: userPayload.role,
             name: fullname,
             individual: {
                 firstName: holder.firstName,
@@ -37,7 +37,7 @@ const createCardHolder = async (req, res) => {
             },
             status: holder.status,
             billingAddress: {
-                line1: holder.street,
+                line1: holder.address,
                 city: holder.city,
                 state: holder.state,
                 postalCode: holder.postalCode,
@@ -47,9 +47,10 @@ const createCardHolder = async (req, res) => {
             emailAddress: holder.user.email
         };
         const response = await axios_1.default.post(url, holderData, { headers });
-        const data = response.data;
-        console.log(data);
-        return data;
+        // Response Information
+        const holderInfo = response.data.data;
+        console.log(response.data);
+        return holderInfo;
     }
     catch (err) {
         console.log(err);

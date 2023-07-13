@@ -41,7 +41,7 @@ const KYCSchema = new Schema<KYC>({
     city: {
         type: String 
     },
-    street: {
+    address: {
         type: String
     },
     postalCode: {

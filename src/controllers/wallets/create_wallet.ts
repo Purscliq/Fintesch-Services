@@ -79,6 +79,7 @@ export const createAccount = async (req: Request, res: Response) => {
       account_name: info.data.account_name,
       account_number: info.data.account_number,
       currency: info.data.currency,
+      status: info.data.status,
       reference: info.data.reference,
       assignment: info.data.assignment,
       customer: info.data.customer,

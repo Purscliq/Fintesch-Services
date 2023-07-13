@@ -23,19 +23,20 @@ const headers = {
 const createCard = async (req, res) => {
     const authHeader = req.headers.authorization;
     const userPayload = (0, decode_token_1.decodeToken)(authHeader.split(" ")[1]);
-    const wallet = await Wallet_1.Wallet.findOne({ user: userPayload.userId }).select("id customer");
+    const url = 'https://api.sandbox.sudo.cards/cards';
+    const wallet = await Wallet_1.Wallet.findOne({ user: userPayload.userId }).select("id status currency");
     if (!wallet)
         throw Error;
+    // creates a card customer 
     const customer = await (0, create_cardholder_1.createCardHolder)(req, res);
     try {
-        const url = 'https://api.sandbox.sudo.cards/cards';
         const cardData = {
-            customerId: customer.id,
+            customerId: customer._id,
             fundingSourceId: wallet.id,
             type: "virtual",
-            currency: "NGN",
+            currency: wallet.currency,
             issuerCountry: "NGA",
-            status: "active",
+            status: wallet.status,
             spendingControls: {
                 channels: {
                     atm: true,
@@ -50,7 +51,13 @@ const createCard = async (req, res) => {
         const response = await axios_1.default.post(url, cardData, { headers });
         const data = response.data;
         console.log(data);
-        const card = new Card_1.Card(data);
+        if (!data || data.statusCode === 400) {
+            return res.status(http_status_codes_1.StatusCodes.BAD_REQUEST).json({
+                error: data.error,
+                message: data.message
+            });
+        }
+        const card = new Card_1.Card({});
         await card.save();
         res.status(http_status_codes_1.StatusCodes.OK).json(card);
     }

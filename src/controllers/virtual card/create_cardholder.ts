@@ -33,7 +33,7 @@ export const createCardHolder = async(req: Request, res: Response) => {
 
         // card holder data
         const holderData =  {
-            type: "individual",
+            type: userPayload.role,
             name: fullname,
             individual: {
                 firstName: holder.firstName,
@@ -43,7 +43,7 @@ export const createCardHolder = async(req: Request, res: Response) => {
             },
             status: holder.status,
             billingAddress: {
-                line1: holder.street,
+                line1: holder.address,
                 city: holder.city,
                 state: holder.state,
                 postalCode: holder.postalCode,
@@ -54,9 +54,12 @@ export const createCardHolder = async(req: Request, res: Response) => {
         }
 
         const response = await axios.post(url, holderData, { headers });
-        const data = response.data;
-        console.log(data);
-        return data;
+        // Response Information
+        const holderInfo = response.data.data;
+
+        console.log(response.data);
+
+        return holderInfo;
     } 
     catch(err: any) {
         console.log(err);

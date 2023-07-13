@@ -1,16 +1,16 @@
 import {config} from 'dotenv'
 import { Request, Response } from "express"
-import bcrypt from 'bcrypt'
 import axios from 'axios'
 import { decodeToken } from "../utils/decode_token"
 import { KYC } from "../../models/KYC"
 import { JwtPayload } from "jsonwebtoken"
 import { ReasonPhrases, StatusCodes } from "http-status-codes"
+import { sendSMS } from '../utils/send_sms'
+import { generateOTP } from '../utils/generate_otp'
 
-config()
+config();
 
-const liveKey = process.env.verifyMe_key as string
-// const testKey = process.env.testKey as string
+const liveKey = process.env.verifyMeKey as string;
 
 // Verify user via BVN
 export const bvnVerification = async (req:Request, res:Response) => {
@@ -26,7 +26,11 @@ export const bvnVerification = async (req:Request, res:Response) => {
             DOB, 
             otherName, 
             phoneNumber,
-            address, 
+            address,
+            state,
+            city,
+            country,
+            postalCode, 
             gender, 
             nationality, 
             idType, 
@@ -65,24 +69,36 @@ export const bvnVerification = async (req:Request, res:Response) => {
             DOB,
             otherName,
             phoneNumber, 
-            address, 
+            address,
+            state,
+            city,
+            country,
+            postalCode,
             gender, 
             nationality, 
             idType, 
             idNumber,  
-            expiryDate,
+            expiryDate
         }
 
-        const kyc = new KYC(kycData)
-        kyc.status =  "active"
-        await kyc.save()
+        const kyc = new KYC(kycData);
 
         // SEND OTP TO PHONE NUMBER (Phone Number verification)
+        const OTP = generateOTP();
+
+        const smsStatus = sendSMS(phoneNumber, OTP); 
+
+        kyc.status = "active";
+
+        kyc.OTP = OTP;
+
+        await kyc.save();
 
         // return result
         return res.status(StatusCodes.OK).json({ 
             Success: ReasonPhrases.OK, 
-            message: "An OTP has been sent to your Phone number",  
+            message: "An OTP has been sent to your phone number", 
+            smsStatus, 
             result: info
         })
     } catch(error: any) {

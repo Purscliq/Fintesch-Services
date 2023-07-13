@@ -15,10 +15,10 @@ const send_mail_1 = require("../utils/send_mail");
 (0, dotenv_1.config)();
 const secretKey = process.env.secretKey;
 const domain = process.env.DOMAIN;
-const key = process.env.api_key;
+const key = process.env.mailgunKey;
 // TOKEN CREATION FUNCTION
-const createToken = (email, userId) => {
-    const payload = { email, userId };
+const createToken = (email, userId, role) => {
+    const payload = { email, userId, role };
     if (!secretKey)
         throw new Error(' token key is undefined');
     return jsonwebtoken_1.default.sign(payload, secretKey, { expiresIn: "1d" });
@@ -76,8 +76,10 @@ class Authenticate {
                     return res.status(http_status_codes_1.StatusCodes.NOT_FOUND).json({ message: "This user is " + http_status_codes_1.ReasonPhrases.NOT_FOUND });
                 const isPasswordMatch = await bcrypt_1.default.compare(password, profile.password);
                 if (!isPasswordMatch)
-                    return res.status(http_status_codes_1.StatusCodes.UNAUTHORIZED).json({ message: "The password you entered is incorrect" });
-                const token = (0, exports.createToken)(profile.email, profile._id);
+                    return res.status(http_status_codes_1.StatusCodes.UNAUTHORIZED).json({
+                        message: "The password you entered is incorrect"
+                    });
+                const token = (0, exports.createToken)(profile.email, profile._id, profile.role);
                 return res.status(http_status_codes_1.StatusCodes.OK).json({ token, profile });
             }
             catch (error) {

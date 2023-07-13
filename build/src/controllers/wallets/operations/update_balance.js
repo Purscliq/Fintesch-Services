@@ -36,15 +36,15 @@ const updateBalance = async (req, res) => {
             if (result.status !== true && data.currency !== result.data.currency) {
                 throw ("Invalid transaction");
             }
+            // Update balance and transaction status in wallet collection
             const wallet = await Wallet_1.Wallet.findOne({ user: userPayload.userId }).select("balance");
             wallet.balance = (wallet.balance) + parseInt(result.data.amount);
             wallet.status = result.data.status;
-            // Save transfer details to database
+            await wallet.save();
+            // Save transaction details to database
             const transaction = new Transaction_1.Transaction(transactionData);
             console.log(transaction);
             await transaction.save();
-            // update wallet status with transaction status from webhook
-            await wallet.save();
             return res.status(http_status_codes_1.StatusCodes.OK).json(wallet);
         }
         else if (notify === "payout" && notifyType === "successful") {

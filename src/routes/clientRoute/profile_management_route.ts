@@ -1,7 +1,9 @@
 // IMPORT ROUTER
-import express from 'express'
-const router = express.Router()
-import { viewMyProfile, editMyProfile, deleteMyProfile} from '../../controllers/users/profile'
+import express from 'express';
+
+const router = express.Router();
+
+import { viewMyProfile, editMyProfile, deleteMyProfile } from '../../controllers/users/profile';
 
 router.route("/")
     .get(viewMyProfile)
@@ -9,5 +11,5 @@ router.route("/")
     .delete(deleteMyProfile)
 // router.route("/signout").post(signOut)
 
-export = router
+export = router;
 

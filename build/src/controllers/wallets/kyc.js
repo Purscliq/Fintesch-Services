@@ -9,16 +9,17 @@ const axios_1 = __importDefault(require("axios"));
 const decode_token_1 = require("../utils/decode_token");
 const KYC_1 = require("../../models/KYC");
 const http_status_codes_1 = require("http-status-codes");
+const send_sms_1 = require("../utils/send_sms");
+const generate_otp_1 = require("../utils/generate_otp");
 (0, dotenv_1.config)();
-const liveKey = process.env.verifyMe_key;
-// const testKey = process.env.testKey as string
+const liveKey = process.env.verifyMeKey;
 // Verify user via BVN
 const bvnVerification = async (req, res) => {
     // Get user token from auth header
     const authHeader = req.headers.authorization;
     const userPayload = (0, decode_token_1.decodeToken)(authHeader.split(" ")[1]);
     // Get KYC details
-    const { firstName, lastName, BVN, DOB, otherName, phoneNumber, address, gender, nationality, idType, idNumber, expiryDate } = req.body;
+    const { firstName, lastName, BVN, DOB, otherName, phoneNumber, address, state, city, country, postalCode, gender, nationality, idType, idNumber, expiryDate } = req.body;
     // PERFORM KYC
     try {
         const url = `https://vapi.verifyme.ng/v1/verifications/identities/bvn/${BVN}`;
@@ -46,20 +47,28 @@ const bvnVerification = async (req, res) => {
             otherName,
             phoneNumber,
             address,
+            state,
+            city,
+            country,
+            postalCode,
             gender,
             nationality,
             idType,
             idNumber,
-            expiryDate,
+            expiryDate
         };
         const kyc = new KYC_1.KYC(kycData);
-        kyc.status = "active";
-        await kyc.save();
         // SEND OTP TO PHONE NUMBER (Phone Number verification)
+        const OTP = (0, generate_otp_1.generateOTP)();
+        const smsStatus = (0, send_sms_1.sendSMS)(phoneNumber, OTP);
+        kyc.status = "active";
+        kyc.OTP = OTP;
+        await kyc.save();
         // return result
         return res.status(http_status_codes_1.StatusCodes.OK).json({
             Success: http_status_codes_1.ReasonPhrases.OK,
-            message: "An OTP has been sent to your Phone number",
+            message: "An OTP has been sent to your phone number",
+            smsStatus,
             result: info
         });
     }

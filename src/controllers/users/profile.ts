@@ -38,7 +38,7 @@ export const editMyProfile = async (req: Request, res: Response) => {
             return res.send("Error occurred: cannot update profile")
         }
         // Create new token that contains updated data
-        const token = createToken( updatedProfile.email, updatedProfile._id );
+        const token = createToken(updatedProfile.email, updatedProfile._id, updatedProfile.role);
         return res.status(StatusCodes.OK).json({ token, updatedProfile })
     } catch (error: any) {
             console.error(error)
@@ -63,9 +63,7 @@ export const deleteMyProfile = async (req: Request, res: Response) => {
 // USER SIGNOUT METHOD
 // export const signOut = async (req:Request, res:Response) => {
 //     try {
-//         return res.cookie("jwt", "", { maxAge: 1 }).status(StatusCodes.OK).json({
-//             message: "You have been successfully Logged Out"
-//         })
+//         return req.headers.authorization = undefined;
 //     } catch (error) {
 //         console.error(error)
 //         return res.status(StatusCodes.BAD_REQUEST).send(ReasonPhrases.BAD_REQUEST)

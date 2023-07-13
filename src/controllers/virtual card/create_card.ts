@@ -22,22 +22,23 @@ const headers = {
 export const createCard = async(req: Request, res: Response) => {
     const authHeader = req.headers.authorization as string;
     const userPayload = decodeToken(authHeader.split(" ")[1]) as JwtPayload;
-    const wallet = await Wallet.findOne({user: userPayload.userId}).select("id customer");
+    const url = 'https://api.sandbox.sudo.cards/cards';
+    const wallet = await Wallet.findOne({user: userPayload.userId}).select("id status currency");
 
     if(!wallet)
         throw Error;
 
+    // creates a card customer 
     const customer = await createCardHolder(req, res);
 
     try {
-        const url = 'https://api.sandbox.sudo.cards/cards';
         const cardData = {
-            customerId: customer.id,
+            customerId: customer._id,
             fundingSourceId: wallet.id,
             type: "virtual",
-            currency: "NGN",
+            currency: wallet.currency,
             issuerCountry: "NGA",
-            status: "active",
+            status: wallet.status,
             spendingControls: {
               channels: {
                 atm: true,
@@ -54,8 +55,18 @@ export const createCard = async(req: Request, res: Response) => {
           const data = response.data;
           console.log(data);
 
-          const card = new Card(data);
-          await card.save()
+          if(!data || data.statusCode === 400) {
+            return res.status(StatusCodes.BAD_REQUEST).json(
+              { 
+                error: data.error,
+                message: data.message
+              }
+            );
+          }
+
+          const card = new Card({});
+          
+          await card.save();
           res.status(StatusCodes.OK).json(card)
     } catch(err: any) {
         console.log(err.status, err.message)

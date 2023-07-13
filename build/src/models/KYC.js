@@ -42,7 +42,7 @@ const KYCSchema = new mongoose_1.Schema({
     city: {
         type: String
     },
-    street: {
+    address: {
         type: String
     },
     postalCode: {

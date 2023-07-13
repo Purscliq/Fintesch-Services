@@ -22,8 +22,7 @@ const cardSchema = new mongoose_1.Schema({
         maximum: 4
     },
     name: {
-        type: String,
-        unique: true
+        type: String
     },
     cvv: {
         type: String,
@@ -43,17 +42,14 @@ const cardSchema = new mongoose_1.Schema({
         type: String,
         required: true,
         enum: { value: ["Verve", "MasterCard", "Visa"] },
-        default: "Verve"
     },
     currency: {
         type: String,
         required: true,
-        default: "NGN"
     },
     status: {
         type: String,
         enum: { value: ["active", "expired", "blocked"] },
-        default: "active"
     },
     OTP: Number
 }, { timestamps: true, strict: true });
