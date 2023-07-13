@@ -86,7 +86,7 @@ export const bvnVerification = async (req:Request, res:Response) => {
         // SEND OTP TO PHONE NUMBER (Phone Number verification)
         const OTP = generateOTP();
 
-        const smsStatus = sendSMS(phoneNumber, OTP); 
+        const smsStatus = await sendSMS(phoneNumber, OTP); 
 
         kyc.status = "active";
 

@@ -60,7 +60,7 @@ const bvnVerification = async (req, res) => {
         const kyc = new KYC_1.KYC(kycData);
         // SEND OTP TO PHONE NUMBER (Phone Number verification)
         const OTP = (0, generate_otp_1.generateOTP)();
-        const smsStatus = (0, send_sms_1.sendSMS)(phoneNumber, OTP);
+        const smsStatus = await (0, send_sms_1.sendSMS)(phoneNumber, OTP);
         kyc.status = "active";
         kyc.OTP = OTP;
         await kyc.save();
