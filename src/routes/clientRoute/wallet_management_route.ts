@@ -1,14 +1,28 @@
-import express from 'express';
-import { createAccount } from '../../controllers/wallets/create_wallet';
-import { getWalletBalance } from '../../controllers/wallets/operations/check_wallet_balance';
-import { changeTransactionPIN, setTransactionPIN } from '../../controllers/wallets/operations/set_wallet_PIN';
+import { Router } from 'express';
+import { Balance } from '../../controllers/wallets/operations/manage_wallet_balance';
+import { TransactionPIN } from '../../controllers/wallets/operations/manage_wallet_Pin';
+import { WalletService } from '../../controllers/wallets/create_wallet';
 
-const router = express.Router();
+export class WalletRoutes {
+    private router: Router;
+    private wallet: WalletService;
+    private balance: Balance;
+    private managePin: TransactionPIN;
 
-// router.route("/create-customer").post(createCustomer)
-router.route("/create-account").post(createAccount);
-router.route("/balance").get(getWalletBalance);
-router.route("/pin").put(setTransactionPIN);
-router.route("/change_pin").put(changeTransactionPIN);
 
-export = router;
+    constructor() {
+        this.router = Router();
+        this.wallet = new WalletService();
+        this.balance = new Balance();
+        this.managePin = new TransactionPIN();
+    }
+
+    public instantiate() {
+        this.router.route("/").post(this.wallet.createWallet);
+        this.router.route("/balance").get(this.balance.getWalletBalance);
+        this.router.route("/pin").put(this.managePin.setPin);
+        this.router.route("/change_pin").put(this.managePin.changePin);
+
+        return this.router;
+    }
+}

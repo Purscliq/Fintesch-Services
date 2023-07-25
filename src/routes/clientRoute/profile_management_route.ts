@@ -1,15 +1,22 @@
 // IMPORT ROUTER
 import express from 'express';
+import { UserService } from '../../controllers/users/profile';
+
+const users = new UserService();
+const { 
+        viewProfile, 
+        editProfile, 
+        deleteProfile, 
+        signOut
+    } = users;
 
 const router = express.Router();
 
-import { viewMyProfile, editMyProfile, deleteMyProfile } from '../../controllers/users/profile';
-
 router.route("/")
-    .get(viewMyProfile)
-    .patch(editMyProfile)
-    .delete(deleteMyProfile)
-// router.route("/signout").post(signOut)
+    .get(viewProfile)
+    .patch(editProfile)
+    .delete(deleteProfile)
+router.route("/signout").post(signOut)
 
 export = router;
 

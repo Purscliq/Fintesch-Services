@@ -48,9 +48,11 @@ const transaction_management_route_1 = __importDefault(require("./src/routes/adm
 const user_management_route_1 = __importDefault(require("./src/routes/adminRoute/user_management_route"));
 const card_management_route_1 = __importDefault(require("./src/routes/adminRoute/card_management_route"));
 const updateBalance_route_1 = __importDefault(require("./src/routes/clientRoute/updateBalance_route"));
+const testRoute_1 = __importDefault(require("./src/routes/testRoute"));
 // CUSTOM MIDDLEWARES
 const authenticate_1 = require("./middlewares/authenticate");
 const check_admin_1 = require("./middlewares/check_admin");
+// import { notFound } from './middlewares/not_found'
 // DATABASE CONNECTIONS
 const connect_1 = require("./config/connect");
 // CONNECT TO PORT
@@ -65,7 +67,6 @@ app.use((0, cors_1.default)());
 app.use("/auth", auth_route_1.default);
 app.use("/pwd/reset", forgot_password_route_1.default);
 app.use("/api", authenticate_1.verifyToken);
-app.use("api/admin", check_admin_1.isAdmin);
 app.use("/api/pwd/reset", change_password_route_1.default);
 app.use("/api/profile", profile_management_route_1.default);
 app.use("/api/kyc", kyc_verification_route_1.default);
@@ -73,10 +74,12 @@ app.use("/api/wallet", wallet_management_route_1.default);
 app.use("/api/transaction", transaction_route_1.default);
 app.use("/api/transaction/update_bal", updateBalance_route_1.default);
 app.use("/api/services", quickservices_route_1.default);
+app.use("api/admin", check_admin_1.isAdmin);
 app.use("/api/admin/users", user_management_route_1.default);
 app.use("/api/admin/wallet", wallet_management_route_2.default);
 app.use("/api/admin/transactions", transaction_management_route_1.default);
 app.use("/api/admin/cards", card_management_route_1.default);
+app.use("/test/senderId", testRoute_1.default);
 // SERVER CONNECTION FUNCTION
 const server = async () => {
     try {

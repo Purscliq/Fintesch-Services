@@ -35,6 +35,9 @@ const bvnVerification = async (req, res) => {
         };
         const response = await axios_1.default.post(url, data, { headers });
         const info = response.data.data;
+        if (!info) {
+            throw Error;
+        }
         if ((info.firstname).toLowerCase() !== firstName.toLowerCase() || (info.lastname).toLowerCase() !== lastName.toLowerCase())
             return res.status(http_status_codes_1.StatusCodes.NOT_FOUND).json({ message: "KYC did not pass" });
         // Save KYC details to DB
@@ -60,9 +63,14 @@ const bvnVerification = async (req, res) => {
         const kyc = new KYC_1.KYC(kycData);
         // SEND OTP TO PHONE NUMBER (Phone Number verification)
         const OTP = (0, generate_otp_1.generateOTP)();
-        const smsStatus = await (0, send_sms_1.sendSMS)(phoneNumber, OTP);
+        const smsStatus = await (0, send_sms_1.sendSMS)(req, res, info.phone, OTP);
+        console.log(smsStatus);
         kyc.status = "active";
         kyc.OTP = OTP;
+        // const expiryTime = Date.now() + 600000
+        // setTimeout(() => {
+        //     kyc.OTP = undefined;
+        // }, expiryTime)
         await kyc.save();
         // return result
         return res.status(http_status_codes_1.StatusCodes.OK).json({

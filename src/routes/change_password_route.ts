@@ -1,12 +1,13 @@
 import express from 'express'
-import { ResetPassword } from '../controllers/password/password_reset'
+import { ResetPassword } from '../controllers/password/forgot_password'
 
-const router = express.Router()
-const reset = new ResetPassword()
-const { resetPassword } = reset
 
-// /api/pwd/reset = /
-router.route("/")
-    .patch(resetPassword)
+const reset = new ResetPassword();
+const { updatePassword } = reset;
+
+
+const router = express.Router();
+
+router.route("/").patch(updatePassword)
 
 export = router

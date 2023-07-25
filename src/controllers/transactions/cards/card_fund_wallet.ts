@@ -5,59 +5,89 @@ import axios from 'axios'
 import { StatusCodes } from 'http-status-codes'
 import { generateRefID } from '../../utils/generate_ref'
 import { decodeToken } from '../../utils/decode_token'
-import { Wallet } from '../../../models/Wallet'
+import { headerType } from '../../../types_interfaces'
 
 config()
 
-const budKey = process.env.bud_key as string
+export class FundWalletService {
+    private reference: string;
+    private budBaseUrl: string;
+    private budKey: string;
+    private headers: headerType
 
-// set headers
-const headers = {
-    authorization: `Bearer ${budKey}`,
-    "content-type": "application/json"
-}
-
-// ENCRYPT CARD
-export const fundWallet = async(req:Request, res:Response) => {
-    const authHeader = req.headers.authorization as string
-    const data = decodeToken(authHeader.split(" ")[1]) as JwtPayload
-    const reference = generateRefID()
-    const url = "https://api.budpay.com/api/s2s/test/encryption"
-    const payUrl = "https://api.budpay.com/api/s2s/transaction/initialize"
-
-    const wallet: any = await Wallet.findOne({ user: data.userId }).select("user")
-
-    try {
-        // get card details
-        const { amount, number, expiryMonth, expiryYear, cvv, pin } = req.body
-
-        const budData = {
-            data: { number, expiryMonth, expiryYear, cvv },
-            reference
+    constructor() {
+        this.reference = generateRefID();
+        this.budBaseUrl = process.env.budBaseUrl as string;
+        this.budKey = process.env.bud_key as string;
+        this.headers = {
+            authorization: `Bearer ${this.budKey}`,
+            "content-type": "application/json"
         }
-        // Make axios API call to encrypt card
-        const response = await axios.post(url, budData, { headers })
-        const encryptedCard = response.data
+    }
 
-        console.log(encryptedCard)
+    public encryptCard = async (req: Request, res: Response) => {
+        const url = `${this.budBaseUrl}/s2s/test/encryption`;
 
-        // Initialize Wallet Funding
-        const paymentData = {
+        try {
+            const { 
                 amount, 
-                card: encryptedCard, 
-                callback:"www.budpay.com",
-                currency: "NGN",
-                email: data.email,
-                pin,
-                reference
+                number, 
+                expiryMonth, 
+                expiryYear, 
+                cvv, 
+                pin 
+            } = req.body
+    
+            const cardData = {
+                data: { 
+                    number, 
+                    expiryMonth, 
+                    expiryYear, 
+                    cvv 
+                },
+                reference: this.reference
             }
+          
+            const response = await axios.post(url, cardData, { headers: this.headers });
+            const encryptedCard = response.data;
+
+            return {
+                encryptedCard,
+                pin,
+                amount,
+                reference: this.reference
+            }
+
+        } catch (error: any) {
+            throw error;
+        }
+    }
+
+    public fundWallet = async (req: Request, res: Response) => {
+        const authHeader = req.headers.authorization as string;
+        const data = decodeToken(authHeader.split(" ")[1]) as JwtPayload;
+
+        const payEndPoint = `${this.budBaseUrl}/s2s/transaction/initialize`;
+        const cardObj = await this.encryptCard(req, res);
+
+        try {
+            const paymentPayload = {
+                    amount: cardObj.amount , 
+                    card: cardObj.encryptedCard, 
+                    callback:"www.budpay.com",
+                    currency: "NGN",
+                    email: data.email,
+                    pin: cardObj.pin,
+                    reference: cardObj.reference
+                }
         
-        const resp = await axios.post(payUrl, paymentData, { headers })
-        const resInfo = resp.data
-        console.log(resInfo)
-        return res.status(StatusCodes.OK).json({ resInfo })
-    } catch( error: any ) {
-        res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(error.message)
-        console.error(error)
+            const response = await axios.post(payEndPoint, paymentPayload, { headers: this.headers });
+            const info = response.data;
+            return res.status(StatusCodes.OK).json({ info });
+
+        } catch (error: any ) {
+            res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(error.message)
+            console.error(error)
+        }
     }
 }

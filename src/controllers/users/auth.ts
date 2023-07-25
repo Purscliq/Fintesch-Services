@@ -1,37 +1,35 @@
-//IMPORT DEPENDENCIES
-import { config } from 'dotenv' 
-import {Request, Response} from 'express'
-import {StatusCodes, ReasonPhrases} from 'http-status-codes'
-import jwt, {JwtPayload} from 'jsonwebtoken'
-import bcrypt from 'bcrypt'
-import { User } from '../../models/User'
-import { generateOTP } from '../utils/generate_otp'
-import { sendMail } from '../utils/send_mail'
+// IMPORT DEPENDENCIES
+import { config } from 'dotenv';
+import {Request, Response} from 'express';
+import { User } from '../../models/User';
+import {StatusCodes, ReasonPhrases} from 'http-status-codes';
+import bcrypt from 'bcrypt';
+import { GenerateOTP } from '../utils/generate_otp';
+import { sendMail } from '../utils/send_mail';
+import { Token } from '../utils/create_token';
 
 config();
 
-const secretKey = process.env.secretKey as string;
 
-const domain = process.env.DOMAIN as string;
+export class AuthService {
+    private domain: string;
+    private key: string;
+    private token: Token;
+    private OTP: GenerateOTP;
+    private mailText: string;
 
-const key = process.env.mailgunKey as string;
+    constructor() {
+        this.domain = process.env.DOMAIN as string;
+        this.key = process.env.mailgunKey as string; 
+        this.OTP = new GenerateOTP;
+        this.mailText =`<p> Welcome to e-Tranzact. Your One-Time password for your e-Tranzact account is ${this.OTP}.
+        Password is valid for 20 minutes.</p>`
+        this.token = new Token;
+    }
 
-// TOKEN CREATION FUNCTION
-export const createToken = (email: string, userId: any, role: string) => {
-    const payload = { email, userId, role } as JwtPayload;
-
-    if(!secretKey)
-        throw new Error(' token key is undefined');
-        
-    return jwt.sign(payload, secretKey, { expiresIn: "1d"});
-}
-
-// AUTHENTICATE CLASS
-export class Authenticate {
-    public signUp = async (req: Request, res: Response ) => {
+    public async signup(req: Request, res: Response) {
         try {
             const { email, password, confirmPassword } = req.body;
-            
             const checksIfUserExists = await User.findOne({ email }).select("email");
             
             if(checksIfUserExists) {
@@ -44,66 +42,91 @@ export class Authenticate {
 
             const securePassword = await bcrypt.hash(password, bcrypt.genSaltSync(10));
 
-            const user = new User({ email, password: securePassword });
+            const user = new User(
+                { 
+                    email, 
+                    password: securePassword 
+                }
+            );
 
-            user.OTP = generateOTP();
-
+            user.OTP = this.OTP;
             await user.save();
-
-            // Send OTP to Mail
-            const mailText = `<p> Welcome to e-Tranzact. Your One-Time password for your e-Tranzact account is ${user.OTP}.
-            Password is valid for 20 minutes.</p>`
             
             const messageData = {
                 from: 'e-Tranzact <jon@gmail.com>',
                 to: email,
                 subject: 'Verify Your Account',
-                html: mailText
+                html: this.mailText
             }
 
-            sendMail(domain, key, messageData)
+            await sendMail(this.domain, this.key, messageData);
 
-            const userCount = await User.countDocuments({})
+            const userCount = await User.countDocuments({});
 
             if(userCount === 0) {
                 user.role = "Admin"
-                await user.save()
+                await user.save();
             }
 
-            return res.status(StatusCodes.OK).json({ 
-                Success: "USER PROFILE CREATED SUCCESSFULLY!", 
-                message: "A One-Time Password has been sent to your mail",
-                OTP: user.OTP
-            })
+            return res.status(StatusCodes.OK).json(
+                { 
+                    Success: "USER PROFILE CREATED SUCCESSFULLY!", 
+                    message: "A One-Time Password has been sent to your mail",
+                    OTP: user.OTP
+                }
+            )
         } catch (error: any) {
-            console.error(error.message)
-            return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error.message)
+            console.error(error.message);
+            return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error.message);
         }
     }
 
-// USER LOGIN METHOD
-    public signIn = async ( req:Request, res:Response) => {
+    public async signin(req: Request, res: Response) {
         try {
             const { email, password } = req.body;
-
             const profile = await User.findOne({ email }).select("email password");
             
             if (!profile) 
-                return res.status(StatusCodes.NOT_FOUND).json({ message: "This user is " + ReasonPhrases.NOT_FOUND })
+                return res.status(StatusCodes.NOT_FOUND).json(
+                    { 
+                        message: "This user is " + ReasonPhrases.NOT_FOUND 
+                    }
+                );
            
-            const isPasswordMatch = await bcrypt.compare( password, profile.password )
+            const isPasswordMatch = await bcrypt.compare(password, profile.password);
 
             if (!isPasswordMatch)
-                return res.status(StatusCodes.UNAUTHORIZED).json({ 
-                    message: "The password you entered is incorrect" 
-                })
+                return res.status(StatusCodes.UNAUTHORIZED).json(
+                    { 
+                        message: "The password you entered is incorrect" 
+                    }
+                )
 
-            const token = createToken(profile.email, profile._id, profile.role);
+            const token = this.token.createToken(
+                profile.email,
+                profile._id,
+                profile.role
+            );
 
-            return res.status(StatusCodes.OK).json({ token, profile });
+            return res.status(StatusCodes.OK).json(
+                { 
+                    token, 
+                    profile 
+                }
+            );
+            
         } catch( error: any ) {
             console.error(error) 
             return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error.message)
         }
+    };
+
+    public async signout(req: Request, res: Response) {
+        try {
+                return req.headers.authorization = undefined;
+            } catch (error) {
+                console.error(error)
+                return res.status(StatusCodes.BAD_REQUEST).send(ReasonPhrases.BAD_REQUEST)
+            }
+        }
     }
-}

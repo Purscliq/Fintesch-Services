@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Authenticate = exports.createToken = void 0;
+exports.AuthService = exports.createToken = void 0;
 //IMPORT DEPENDENCIES
 const dotenv_1 = require("dotenv");
 const http_status_codes_1 = require("http-status-codes");
@@ -24,10 +24,9 @@ const createToken = (email, userId, role) => {
     return jsonwebtoken_1.default.sign(payload, secretKey, { expiresIn: "1d" });
 };
 exports.createToken = createToken;
-// AUTHENTICATE CLASS
-class Authenticate {
+class AuthService {
     constructor() {
-        this.signUp = async (req, res) => {
+        this.signup = async (req, res) => {
             try {
                 const { email, password, confirmPassword } = req.body;
                 const checksIfUserExists = await User_1.User.findOne({ email }).select("email");
@@ -50,7 +49,7 @@ class Authenticate {
                     subject: 'Verify Your Account',
                     html: mailText
                 };
-                (0, send_mail_1.sendMail)(domain, key, messageData);
+                await (0, send_mail_1.sendMail)(domain, key, messageData);
                 const userCount = await User_1.User.countDocuments({});
                 if (userCount === 0) {
                     user.role = "Admin";
@@ -68,7 +67,7 @@ class Authenticate {
             }
         };
         // USER LOGIN METHOD
-        this.signIn = async (req, res) => {
+        this.signin = async (req, res) => {
             try {
                 const { email, password } = req.body;
                 const profile = await User_1.User.findOne({ email }).select("email password");
@@ -89,4 +88,4 @@ class Authenticate {
         };
     }
 }
-exports.Authenticate = Authenticate;
+exports.AuthService = AuthService;

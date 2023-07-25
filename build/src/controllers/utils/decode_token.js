@@ -6,8 +6,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.decodeToken = void 0;
 const dotenv_1 = require("dotenv");
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
-const { secretKey } = process.env;
 (0, dotenv_1.config)();
+const { secretKey } = process.env;
 const decodeToken = (token) => {
     try {
         if (!secretKey) {

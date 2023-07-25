@@ -3,8 +3,9 @@ import { Request, Response } from 'express'
 import { StatusCodes } from 'http-status-codes'
 import { User } from '../../models/User'
 
-export const verifyOTP = async (req: Request, res: Response) => {
-    try {
+export class VerifySignupMail {
+    public verify = async (req: Request, res: Response) => {
+        try {
         const { OTP } = req.body;
         const user = await User.findOne({ OTP }).select("OTP")
 
@@ -25,4 +26,5 @@ export const verifyOTP = async (req: Request, res: Response) => {
         console.log(err)
         res.status(StatusCodes.BAD_REQUEST).json( { error: err.message } )
     }
+}
 }

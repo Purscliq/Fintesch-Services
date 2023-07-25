@@ -20,7 +20,7 @@ const resendOTP = async (req, res) => {
         user.OTP = (0, generate_otp_1.generateOTP)();
         await user.save();
         // resend OTP to user Mail
-        const mailText = `<p>Your One-Time password for your e-Tranzact account is ${user.OTP}.
+        const mailText = `<p> Your One-Time password for your e-Tranzact account is ${user.OTP}.
         Password expires in 10 minutes</p>`;
         const messageData = {
             from: 'e-Tranzact <jon@gmail.com>',
@@ -28,8 +28,11 @@ const resendOTP = async (req, res) => {
             subject: 'One-Time Password',
             html: mailText
         };
-        (0, send_mail_1.sendMail)(domain, key, messageData);
-        return res.status(http_status_codes_1.StatusCodes.OK).json({ message: "A One-Time password has been sent to your mail", newCode: user.OTP });
+        await (0, send_mail_1.sendMail)(domain, key, messageData);
+        return res.status(http_status_codes_1.StatusCodes.OK).json({
+            message: "A One-Time password has been sent to your mail",
+            newCode: user.OTP
+        });
     }
     catch (err) {
         res.status(http_status_codes_1.StatusCodes.BAD_REQUEST).json({ error: err.message });

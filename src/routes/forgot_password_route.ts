@@ -1,14 +1,18 @@
-import express from 'express'
-import { ResetPassword } from '../controllers/password/password_reset'
+import express from 'express';
+import { ForgotPassword } from '../controllers/password/forgot_password';
 
-const router = express.Router()
-const reset = new ResetPassword()
-const { forgotPassword, verifyOTP, resetPassword } = reset
 
-// /pwd/reset = /
+const reset = new ForgotPassword();
+const { getResetOtp, verifyResetOtp, updatePassword } = reset;
+
+
+const router = express.Router();
+
+
 router.route("/")
-    .post(forgotPassword)
-    .get(verifyOTP)
-    .patch(resetPassword)
+    .post(getResetOtp)
+    .get(verifyResetOtp)
+router.route("/:id")
+    .put(updatePassword)
 
 export = router

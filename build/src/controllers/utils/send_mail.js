@@ -11,12 +11,16 @@ const sendMail = async (domain, key, messageData) => {
         apiKey: key,
         domain: domain
     });
-    await mailgun.messages().send(messageData, (error, body) => {
-        if (error) {
-            throw new Error(error);
-        }
-        console.log(body);
-    });
-    console.log("Mail sent", messageData);
+    try {
+        await mailgun.messages().send(messageData, (error, body) => {
+            if (error)
+                throw new Error(error);
+            console.log(body);
+        });
+        console.log("Mail sent", messageData);
+    }
+    catch (error) {
+        throw error;
+    }
 };
 exports.sendMail = sendMail;

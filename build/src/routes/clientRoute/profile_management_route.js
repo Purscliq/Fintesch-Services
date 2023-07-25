@@ -4,10 +4,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 // IMPORT ROUTER
 const express_1 = __importDefault(require("express"));
-const router = express_1.default.Router();
 const profile_1 = require("../../controllers/users/profile");
+const users = new profile_1.UserService();
+const { viewProfile, editProfile, deleteProfile, signOut } = users;
+const router = express_1.default.Router();
 router.route("/")
-    .get(profile_1.viewMyProfile)
-    .patch(profile_1.editMyProfile)
-    .delete(profile_1.deleteMyProfile);
+    .get(viewProfile)
+    .patch(editProfile)
+    .delete(deleteProfile);
+router.route("/signout").post(signOut);
 module.exports = router;
