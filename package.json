@@ -4,8 +4,8 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "start": "node ./build/app.js",
-    "dev": "nodemon app.ts",
+    "start": "node ./build/server.js",
+    "dev": "nodemon server.ts",
     "build": "tsc"
   },
   "keywords": [],

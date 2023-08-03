@@ -1,46 +1,49 @@
 import { Request, Response } from "express";
-import { decodeToken } from "../../utils/decode_token";
+import { Token } from '../../users/utils/token_service';
 import { Wallet } from "../../../models/Wallet";
 import { JwtPayload } from "jsonwebtoken";
 import { StatusCodes } from "http-status-codes";
 
-export class TransactionPIN {
-  public setPin = async (req: Request, res: Response) => {
-    try {
-      const { PIN } = req.body;
-      const authHeader = req.headers.authorization as string;
-      const userPayload = decodeToken(authHeader.split(" ")[1]) as JwtPayload;
+export class TransactionPin {
+  private token: Token;
 
-      // save PIN to database
-      const wallet = await Wallet.findOne({ user: userPayload.userId }).select(
-        "PIN"
-      );
+  constructor() {
+    this.token = new Token;
+  }
+
+  public async setPin(req: Request, res: Response) {
+    const { PIN } = req.body;
+    const authHeader = req.headers.authorization as string;
+    const userPayload = this.token.decode(authHeader.split(" ")[1]) as JwtPayload;
+
+    try {
+      const wallet = await Wallet.findOne({ user: userPayload.userId }).select("PIN");
 
       if (!wallet)
         return res
-          .status(StatusCodes.NOT_FOUND)
-          .send("Your account could not be retrieved");
+          .status(StatusCodes.BAD_REQUEST)
+          .json({ message: "Bad Request: account could not be retrieved" });
 
       wallet.PIN = Number(PIN);
-
       await wallet.save();
 
-      return res.status(StatusCodes.OK).json({
-        Success: "PIN has been successfully set",
-        PIN: wallet.PIN,
-      });
+      return res.status(StatusCodes.OK).json(
+          {
+            Success: "PIN has been successfully set",
+            PIN: wallet.PIN,
+          }
+      );
     } catch (error: any) {
-      throw error;
-    }
+        console.error(error);
+      }
   };
 
-  public changePin = async (req: Request, res: Response) => {
+  public async changePin(req: Request, res: Response) {
     try {
       const { newPIN } = req.body;
       const authHeader = req.headers.authorization as string;
-      const userPayload = decodeToken(authHeader.split(" ")[1]) as JwtPayload;
+      const userPayload = this.token.decode(authHeader.split(" ")[1]) as JwtPayload;
 
-      // save PIN to database
       const wallet = await Wallet.findOneAndUpdate(
         { user: userPayload.userId },
         { PIN: Number(newPIN) },
@@ -52,11 +55,11 @@ export class TransactionPIN {
 
       if (!wallet)
         return res
-          .status(StatusCodes.NOT_FOUND)
-          .send("Your account could not be retrieved");
+        .status(StatusCodes.BAD_REQUEST)
+        .json({ message: "Bad Request: account could not be retrieved" });
 
       return res.status(StatusCodes.OK).json({
-        Success: "PIN has been successfully set",
+        Success: "PIN has been successfully changed",
         PIN: wallet.PIN,
       });
     } catch (error: any) {

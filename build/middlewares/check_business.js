@@ -2,26 +2,18 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.isBusiness = void 0;
 const http_status_codes_1 = require("http-status-codes");
-const User_1 = require("../src/models/User");
-const decode_token_1 = require("../src/controllers/utils/decode_token");
+const token_service_1 = require("../src/controllers/users/utils/token_service");
 async function isBusiness(req, res, next) {
     try {
-        const decoded = (0, decode_token_1.decodeToken)(req.cookies.jwt);
-        const user = await User_1.User.findOne({ _id: decoded.userId }).select("role");
-        // Check if the user making the request is an business
-        // If the user is an admin, allow them to proceed to the next middleware function
-        if (user.role === "Business") {
-            next();
-        }
-        else {
-            return res.status(http_status_codes_1.StatusCodes.FORBIDDEN).json({
-                message: "ONLY BUSINESSES! You are not authorized to perform this action"
-            });
-        }
+        const authHeader = req.headers.authorization;
+        const user = new token_service_1.Token().decode(authHeader.split(" ")[1]);
+        (user.role === 'business') ? next() : res.status(http_status_codes_1.StatusCodes.FORBIDDEN).json({
+            message: "You are not authorized to access this resource"
+        });
     }
     catch (error) {
         console.error(error);
-        return res.json({
+        return res.status(error.status).json({
             error: error.status,
             message: error.message
         });

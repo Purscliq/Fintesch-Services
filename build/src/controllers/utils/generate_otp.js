@@ -1,10 +1,12 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.generateOTP = void 0;
-function generateOTP() {
-    const min = 100000; // Minimum value (inclusive)
-    const max = 999999; // Maximum value (inclusive)
-    const OTP = Math.floor(Math.random() * (max - min + 1)) + min;
-    return OTP;
+exports.GenerateOTP = void 0;
+class GenerateOTP {
+    constructor() {
+        this.instantiate = () => this.OTP;
+        this.min = 100000;
+        this.max = 999999;
+        this.OTP = Math.floor(Math.random() * (this.max - this.min + 1)) + this.min;
+    }
 }
-exports.generateOTP = generateOTP;
+exports.GenerateOTP = GenerateOTP;

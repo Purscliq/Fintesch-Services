@@ -3,21 +3,18 @@ import axios from "axios";
 import { Request, Response } from "express";
 import { JwtPayload } from "jsonwebtoken";
 import { StatusCodes } from "http-status-codes";
-import { decodeToken } from "../utils/decode_token";
+import { Token } from "../users/utils/token_service";
 import { KYC } from "../../models/KYC";
-import { Wallet } from "../../models/Wallet";
-import { VerifySmsToken } from "../utils/verify_sms_token";
-import { headerType } from "../../types_interfaces";
+import { Wallet } from "../../models/Wallet";;
+import { HeaderType } from "../../types_interfaces";
 
 config();
 
-export class WalletService {
-
+export class Wallets {
   private budBaseUrl: string;
   private budKey: string;
-  private verifySmsToken: VerifySmsToken = new VerifySmsToken;
-  private headers: headerType
-
+  private headers: HeaderType
+  private token: Token;
 
   constructor() {
       this.budBaseUrl = process.env.budBaseUrl as string;
@@ -25,19 +22,18 @@ export class WalletService {
       this.headers = {
           authorization: `Bearer ${this.budKey}`,
           'content-type': 'application/json'
-      }
+      };
+      this.token = new Token;
   }
-  
+ 
   public createCustomer = async (req: Request, res: Response) => {
+    const authHeader = req.headers.authorization as string;
+    const userPayload = this.token.decode(authHeader.split(" ")[1]) as JwtPayload;
+
+    const CustomerCreationEndPoint = `${this.budBaseUrl}/v2/customer`;
+
       try {
-    
-        const authHeader = req.headers.authorization as string;
-        const userPayload = decodeToken(authHeader.split(" ")[1]) as JwtPayload;
-
-        const CustomerCreationEndPoint = `${this.budBaseUrl}/v2/customer`;
-
-        const kyc = await KYC.findOne({ user: userPayload.userId })
-          .select( "firstName lastName phoneNumber status" );
+        const kyc = await KYC.findOne({ user: userPayload.userId }).select( "firstName lastName phoneNumber status" );
     
         if (!kyc) 
           return res
@@ -49,7 +45,6 @@ export class WalletService {
             .status(StatusCodes.NOT_FOUND)
             .send("You are yet to be verified");
     
-        // customer payload
         const customer = {
           email: userPayload.email,
           first_name: kyc.firstName,
@@ -63,18 +58,16 @@ export class WalletService {
 
       } catch (error: any) {
           console.log(error);
+          throw error;
         }
       };
 
 
   public createWallet = async (req: Request, res: Response) => {
       const authHeader = req.headers.authorization as string;
-      const userPayload = decodeToken(authHeader.split(" ")[1]) as JwtPayload;
-
+      const userPayload = this.token.decode(authHeader.split(" ")[1]) as JwtPayload;
       const virtualAccountEndPoint = `${this.budBaseUrl}/v2/dedicated_virtual_account`;
-
-      await this.verifySmsToken.verify(req, res);
-
+      
       const customerCode = await this.createCustomer(req, res);
 
       try {
@@ -112,8 +105,6 @@ export class WalletService {
         // store account details to customer database
         const wallet = new Wallet(accountData);
         await wallet.save();
-
-        // return results
         return res.status(StatusCodes.OK).json({
 
         })

@@ -3,64 +3,74 @@ import { Request, Response } from "express";
 import { JwtPayload } from 'jsonwebtoken';
 import axios from 'axios';
 import { StatusCodes } from 'http-status-codes';
-import { decodeToken } from '../utils/decode_token';
 import { Card } from '../../models/Card';
-import { Wallet } from '../../models/Wallet';
-import { KYC } from '../../models/KYC';
+import { Token } from '../users/utils/token_service';
 
 config();
 
-const sudoKey = process.env.sudoKey as string;
-
-const headers = {
-    authorization: `Bearer ${sudoKey}`,
-    "content-type": "application/json",
-    accept: 'application/json'
-};
-
-export const updateCardDetails = async(req: Request, res: Response) => {
-    // const authHeader = req.headers.authorization as string;
-    // const userPayload = decodeToken(authHeader.split(" ")[1]) as JwtPayload;
-    const url = 'https://api.sandbox.sudo.cards/cards/:id';
-
-    // const card = await Card.findOne({user: userPayload.userId}).select("id customer");
-    try {
-        const { status } = req.body;
-
-        const data = {
-            status
-        }
-
-        const response = await axios.put(url, data, { headers });
-
-        const info = response.data;
-
-        return res.status(StatusCodes.OK).json(info)
-    } catch( err: any) {
-        throw(err)
+export class UpdateCard {
+    private sudoKey: string;
+    private headers: object;
+    private token: Token;
+    private sudoBaseUrl: string;
+    
+    constructor() {
+    this.sudoKey = process.env.sudoKey as string;
+    this.sudoBaseUrl = process.env.sudo_baseurl as string;
+    this.token = new Token;
+    this.headers = {
+        authorization: `Bearer ${this.sudoKey}`,
+        "content-type": "application/json",
+        accept: 'application/json'
+    };
     }
-}
 
-export const changeCardPin = async(req: Request, res: Response) => {
-    // const authHeader = req.headers.authorization as string;
-    // const userPayload = decodeToken(authHeader.split(" ")[1]) as JwtPayload;
-    const url = 'https://api.sandbox.sudo.cards/cards/:{id}/pin';
-
-    // const card = await Card.findOne({user: userPayload.userId}).select("id customer");
-    try {
-        const { oldPin, newPin } = req.body;
-
-        const data = {
-            oldPin,
-            newPin
+    updateCardDetails = async (req: Request, res: Response) => {
+        const authHeader = req.headers.authorization as string;
+        const userPayload = new Token().decode(authHeader.split(" ")[1]) as JwtPayload;
+    
+        const card: any = await Card.findOne({user: userPayload.userId}).select("id customer");
+        const url = `${this.sudoBaseUrl}/cards:${card.id}`;
+    
+        try {
+            const { status } = req.body;
+    
+            const data = {
+                status
+            }
+    
+            const response = await axios.put(url, data, { headers: this.headers });
+    
+            const info = response.data;
+    
+            return res.status(StatusCodes.OK).json(info)
+        } catch( err: any) {
+            throw(err)
         }
+    }
+    
+    changeCardPin = async (req: Request, res: Response) => {
+        const authHeader = req.headers.authorization as string;
+        const userPayload = new Token().decode(authHeader.split(" ")[1]) as JwtPayload;
 
-        const response = await axios.put(url, data, { headers });
+        const card: any = await Card.findOne({user: userPayload.userId}).select("id customer");
+        const url = `${this.sudoBaseUrl}/cards:${card.id}/pin`;
 
-        const info = response.data;
-
-        return res.status(StatusCodes.OK).json(info)
-    } catch( err: any) {
-        throw(err)
+        try {
+            const { oldPin, newPin } = req.body;
+    
+            const data = {
+                oldPin,
+                newPin
+            }
+    
+            const response = await axios.put(url, data, { headers: this.headers });
+    
+            const info = response.data;
+    
+            return res.status(StatusCodes.OK).json(info)
+        } catch( err: any) {
+            throw(err)
+        }
     }
 }

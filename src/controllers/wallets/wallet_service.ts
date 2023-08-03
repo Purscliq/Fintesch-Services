@@ -1,30 +1,31 @@
-import { TransactionPIN } from "./operations/manage_wallet_Pin.ts"
-import { FundWalletService } from "../transactions/cards/card_fund_wallet"
-import { Request, Response } from "express"
+import { Request, Response } from "express";
+import { TransactionPin } from "./operations/manage_wallet_Pin";
+import { FundWalletService } from "../transactions/cards/card_fund_wallet";
+import { Balance } from "./operations/manage_wallet_balance";
+import { Wallets } from "./create_wallet";
 
-export class Wallets {
-    private transactionPin: TransactionPIN 
-    private fundWallet: FundWalletService
+export class WalletService {
+    private transactionPin: TransactionPin;
+    private fundWallet: FundWalletService;
+    private balance: Balance;
+    private wallet: Wallets;
 
     constructor() {
-        this.transactionPin = new TransactionPIN
-        this.fundWallet = new FundWalletService
+        this.transactionPin = new TransactionPin;
+        this.fundWallet = new FundWalletService;
+        this.balance = new Balance;
+        this.wallet = new Wallets;
     }
 
-    fund(req: Request, res: Response){
-        return this.fundWallet.fundWallet(req, res)
-    };
+    createWallet = (req: Request, res: Response) => this.wallet.createWallet(req, res);
 
-    checkBalance() {
+    fund = (req: Request, res: Response) => this.fundWallet.fundWallet(req, res);
 
-    }
+    checkBalance = (req: Request, res: Response) => this.balance.getWalletBalance(req, res);
 
-    setPin(req: Request, res: Response) {
-        return this.transactionPin.setPin(req, res)
-    }
+    updateBalance = (req: Request, res: Response) => this.balance.updateBalance(req, res);
 
-    changePin(req: Request, res: Response) {
-        return this.transactionPin.changePin(req, res)
-    }
+    setPin = (req: Request, res: Response) => this.transactionPin.setPin(req, res);
 
+    changePin = (req: Request, res: Response) => this.transactionPin.changePin(req, res);
 }

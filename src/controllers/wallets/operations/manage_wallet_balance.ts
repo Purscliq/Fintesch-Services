@@ -1,6 +1,5 @@
-// import {config} from 'dotenv'
 import { Request, Response } from "express"
-import { decodeToken } from "../../utils/decode_token"
+import { Token } from "../../users/utils/token_service" 
 import { JwtPayload } from "jsonwebtoken"
 import { StatusCodes } from "http-status-codes"
 import {Wallet} from "../../../models/Wallet"
@@ -8,26 +7,33 @@ import { Transaction } from '../../../models/Transaction'
 import { VerifyTransactions } from './verify_transactions'
 
 
-
 export class Balance {
-    private budBaseUrl: string = process.env.budBaseUrl as string;
-  
+    private budBaseUrl: string;
+    private token: Token;
 
+    constructor() {
+        this.budBaseUrl = process.env.budBaseUrl as string;
+        this.token = new Token;
+    }
+  
     public async getWalletBalance(req: Request, res: Response) {
         const authHeader = req.headers.authorization as string;
-        const userPayload = decodeToken(authHeader.split(" ")[1]) as JwtPayload;
+        const userPayload = this.token.decode(authHeader.split(" ")[1]) as JwtPayload;
+
         try {
-            const walletBalance = await Wallet.findOne({ user: userPayload.userId }).select("balance")
-            res.status(StatusCodes.OK).json(walletBalance)
+            const walletBalance = await Wallet.findOne({ user: userPayload.userId }).select("balance");
+
+            if(!walletBalance) throw 'Null value returned';
+
+            return res.status(StatusCodes.OK).json(walletBalance)
         } catch(err: any) {
-            throw(err)
+            console.error(err)
         }
     }
 
-    public async updateBalance (req: Request, res: Response) {
-
+    public async updateBalance(req: Request, res: Response) {
         const authHeader = req.headers.authorization as string;
-        const userPayload = decodeToken(authHeader.split(" ")[1]) as JwtPayload;
+        const userPayload = this.token.decode(authHeader.split(" ")[1]) as JwtPayload;
         const { notify, notifyType, data } = req.body;
 
         try {
@@ -36,7 +42,7 @@ export class Balance {
                   notifyType === "successful" && 
                   data.type === "dedicated_nuban"
                 ) {
-                    const url = `${this.budBaseUrl}/v2/transaction/verify/:${data.reference}`
+                    const url = `${this.budBaseUrl}/v2/transaction/verify/:${data.reference}`;
                     const verifyPayin = await new VerifyTransactions().verify(url, data);
                     const wallet: any = await Wallet.findOne(
                         { 
@@ -48,12 +54,12 @@ export class Balance {
                     wallet.status = verifyPayin.data.status;
                     await wallet.save();
 
-                    const transactionPayload = {
+                    const webhookData = {
                         user: userPayload.userId,
                         ...data
                     }
 
-                    const transaction = new Transaction( transactionPayload );
+                    const transaction = new Transaction( webhookData );
                     await transaction.save();
 
                 } else if (notify === "payout" && notifyType === "successful") {
@@ -70,7 +76,7 @@ export class Balance {
                     );
                 }
             } catch (error: any) {
-                console.log(error)
+                console.error(error)
             }
          }
     }

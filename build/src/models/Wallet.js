@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Wallet = void 0;
-// IMPORT MONGOOSE.SCHEMA, MONGOOSE.MODEL, MONGOOSE.INFERSCHEMA
+// IMPORT MONGOOSE.SCHEMA, MONGOOSE.MODEL, MONGOOSE.INFERSCHEMATYPE
 const mongoose_1 = require("mongoose");
 const walletSchema = new mongoose_1.Schema({
     user: {

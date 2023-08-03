@@ -1,12 +1,19 @@
-// IMPORT ROUTER
-import express from 'express'
-const router = express.Router()
-import { bvnVerification } from '../../controllers/utils/kyc'
-import { setTransactionPIN } from '../../controllers/wallets/operations/manage_wallet_Pin.ts'
+import { Router} from 'express';
+import { KnowYourCustomer } from '../../controllers/wallets/utils/kyc';
 
+export class KycRoute {
+    private router: Router;
+    private kyc: KnowYourCustomer;
 
-router.route("/").post(bvnVerification)
+    constructor() {
+        this.router = Router();
+        this.kyc = new KnowYourCustomer;
+        this.instantiate();
+    }
 
-router.route("/set-pin").patch(setTransactionPIN)
+    public instantiate = () => {
+        this.router.route("/").post(this.kyc.verifyBvn);
 
-export = router;
+        return this.router;
+    }
+}

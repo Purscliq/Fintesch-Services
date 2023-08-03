@@ -16,15 +16,5 @@ export class RefGenerator {
         this.reference = this.prefix + this.num;
     }
 
-    public instantiate() {
-        return this.reference;
-    }  
+    public instantiate = () => this.reference;
 }
-
-
-// const characters = "1234567890"
-//     let randomChar = ""
-//     for(let i = 0; i < length; i++) {
-//         let randomIndex = Math.floor(Math.random() * characters.length)
-//         randomChar += characters.charAt(randomIndex)
-//     }

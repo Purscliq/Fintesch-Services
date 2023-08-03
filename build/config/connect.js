@@ -9,14 +9,12 @@ const mongoose_1 = __importDefault(require("mongoose"));
 if (process.env.NODE_ENV !== 'production')
     (0, dotenv_1.config)();
 const { MongoURI } = process.env;
-if (!MongoURI) {
+if (!MongoURI)
     throw new Error('MongoDB URI not found in environment variable!');
-}
 const options = {
     useNewUrlParser: true,
     useUnifiedTopology: true,
 };
-// CONNECT TO DATABASE
 const connectToDatabase = async () => {
     try {
         await mongoose_1.default.connect(MongoURI, options);
@@ -27,7 +25,6 @@ const connectToDatabase = async () => {
     }
 };
 exports.connectToDatabase = connectToDatabase;
-// DISCONNECT FROM DATABASE
 const disconnectFromDatabase = async () => {
     try {
         await mongoose_1.default.disconnect();

@@ -1,16 +1,20 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-// IMPORT ROUTER
-const express_1 = __importDefault(require("express"));
-const profile_1 = require("../../controllers/users/profile");
-const users = new profile_1.UserService();
-const { viewProfile, editProfile, deleteProfile, signOut } = users;
-const router = express_1.default.Router();
-router.route("/")
-    .get(viewProfile)
-    .patch(editProfile)
-    .delete(deleteProfile);
-router.route("/signout").post(signOut);
-module.exports = router;
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.ProfileManagementRoute = void 0;
+const express_1 = require("express");
+const user_service_1 = require("../../controllers/users/user_service");
+class ProfileManagementRoute {
+    constructor() {
+        this.instantiate = () => {
+            this.router.route("/")
+                .get(this.user.viewProfile)
+                .patch(this.user.updateProfile)
+                .delete(this.user.deleteProfile);
+            return this.router;
+        };
+        this.user = new user_service_1.Users;
+        this.router = (0, express_1.Router)();
+        this.instantiate();
+    }
+}
+exports.ProfileManagementRoute = ProfileManagementRoute;

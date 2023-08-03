@@ -1,17 +1,27 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-// IMPORT ROUTER
-const express_1 = __importDefault(require("express"));
-const auth_1 = require("../../controllers/users/auth");
-const verify_otp_1 = require("../../controllers/utils/verify_otp");
-const resend_otp_1 = require("../../controllers/utils/resend_otp");
-const router = express_1.default.Router();
-const auth = new auth_1.AuthService();
-const { signup, signin } = auth;
-router.route("/signup").post(signup);
-router.route("/signin").post(signin);
-router.route("/resendOTP").patch(resend_otp_1.resendOTP);
-router.route("/verify").patch(verify_otp_1.verifyOTP);
-module.exports = router;
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.AuthRoutes = void 0;
+const express_1 = require("express");
+const user_service_1 = require("../../controllers/users/user_service");
+const verify_signup_mail_1 = require("../../controllers/users/utils/verify_signup_mail");
+const authenticate_1 = require("../../../middlewares/authenticate");
+class AuthRoutes {
+    // private verifyMail: VerifySignupMail;
+    constructor() {
+        this.instantiate = () => {
+            this.router.route("/signup").post(this.user.signup);
+            this.router.route("/verify").patch(verify_signup_mail_1.VerifySignupMail.verify);
+            // this.router.route("/verify").patch(this.verifyMail.verify);
+            this.router.route("/signin").post(this.user.signin);
+            this.router.route("/signout").post(authenticate_1.verifyToken, this.user.signout);
+            this.router.route("/signout").post(authenticate_1.verifyToken, this.user.signout);
+            return this.router;
+        };
+        this.router = (0, express_1.Router)();
+        // this.verifyMail = new VerifySignupMail;
+        this.user = new user_service_1.Users;
+        this.instantiate();
+    }
+    ;
+}
+exports.AuthRoutes = AuthRoutes;

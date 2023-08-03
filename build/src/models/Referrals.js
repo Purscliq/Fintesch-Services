@@ -3,17 +3,17 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Referral = void 0;
 const mongoose_1 = require("mongoose");
 const referralSchema = new mongoose_1.Schema({
-    userID: {
+    user_Id: {
         type: mongoose_1.Schema.Types.ObjectId,
         required: true,
         unique: true
     },
-    referralID: {
+    referral_Id: {
         type: String,
         required: true,
         unique: true
     },
-    noOfReferrals: {
+    no_Of_Referrals: {
         type: Number,
         default: 0
     },

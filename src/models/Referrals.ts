@@ -1,21 +1,24 @@
-import { Schema, model, InferSchemaType } from 'mongoose'
-type Referral = InferSchemaType<typeof Schema>
+import { Schema, model, InferSchemaType } from 'mongoose';
+type Referral = InferSchemaType<typeof Schema>;
 
 const referralSchema = new Schema({
-    userID: {
+    user_Id: {
         type: Schema.Types.ObjectId,
         required: true,
         unique: true
     },
-    referralID: {
+
+    referral_Id: {
         type: String,
         required: true,
         unique: true
     },
-    noOfReferrals: {
+
+    no_Of_Referrals: {
         type: Number,
         default: 0
     },
+
     bonus: {
         type: Number,
         default: 0.00
@@ -24,4 +27,4 @@ const referralSchema = new Schema({
     { timestamps: true }
 )
 
-export const Referral = model("referrals", referralSchema)
+export const Referral = model("referrals", referralSchema);

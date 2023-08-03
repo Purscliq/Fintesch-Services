@@ -8,49 +8,46 @@ const dotenv_1 = require("dotenv");
 const axios_1 = __importDefault(require("axios"));
 const http_status_codes_1 = require("http-status-codes");
 const generate_ref_1 = require("../../utils/generate_ref");
-const decode_token_1 = require("../../utils/decode_token");
+const token_service_1 = require("../../users/utils/token_service");
 (0, dotenv_1.config)();
-const budKey = process.env.bud_key;
-// set headers
-const headers = {
-    authorization: `Bearer ${budKey}`,
-    "content-type": "application/json"
-};
+// returns an error from budpay at the moment
 class FundWalletService {
     constructor() {
         this.encryptCard = async (req, res) => {
-            const reference = (0, generate_ref_1.generateRefID)();
-            const url = "https://api.budpay.com/api/s2s/test/encryption";
+            const url = `${this.budBaseUrl}/s2s/test/encryption`;
             try {
-                // get card details
                 const { amount, number, expiryMonth, expiryYear, cvv, pin } = req.body;
                 const cardData = {
-                    data: { number, expiryMonth, expiryYear, cvv },
-                    reference
+                    data: {
+                        number,
+                        expiryMonth,
+                        expiryYear,
+                        cvv
+                    },
+                    reference: this.reference
                 };
-                // Make axios API call to encrypt card
-                const response = await axios_1.default.post(url, cardData, { headers });
+                const response = await axios_1.default.post(url, cardData, { headers: this.headers });
                 const encryptedCard = response.data;
+                res.status(http_status_codes_1.StatusCodes.OK).json(encryptedCard);
                 return {
                     encryptedCard,
                     pin,
                     amount,
-                    reference
+                    reference: this.reference
                 };
             }
             catch (error) {
-                throw error;
+                console.error(error);
+                return res.status(http_status_codes_1.StatusCodes.INTERNAL_SERVER_ERROR).json(error.message);
             }
         };
-        // ENCRYPT CARD
-        this.fund = async (req, res) => {
+        this.fundWallet = async (req, res) => {
             const authHeader = req.headers.authorization;
-            const data = (0, decode_token_1.decodeToken)(authHeader.split(" ")[1]);
-            const payUrl = "https://api.budpay.com/api/s2s/transaction/initialize";
+            const data = this.token.decode(authHeader.split(" ")[1]);
+            const payEndPoint = `${this.budBaseUrl}/s2s/transaction/initialize`;
             const cardObj = await this.encryptCard(req, res);
             try {
-                // Initialize Wallet Funding
-                const paymentData = {
+                const paymentPayload = {
                     amount: cardObj.amount,
                     card: cardObj.encryptedCard,
                     callback: "www.budpay.com",
@@ -59,16 +56,23 @@ class FundWalletService {
                     pin: cardObj.pin,
                     reference: cardObj.reference
                 };
-                const response = await axios_1.default.post(payUrl, paymentData, { headers });
+                const response = await axios_1.default.post(payEndPoint, paymentPayload, { headers: this.headers });
                 const info = response.data;
-                console.log(info);
                 return res.status(http_status_codes_1.StatusCodes.OK).json({ info });
             }
             catch (error) {
-                res.status(http_status_codes_1.StatusCodes.INTERNAL_SERVER_ERROR).send(error.message);
                 console.error(error);
+                return res.status(http_status_codes_1.StatusCodes.INTERNAL_SERVER_ERROR).json(error.message);
             }
         };
+        this.reference = new generate_ref_1.RefGenerator().instantiate();
+        this.budBaseUrl = process.env.budBaseUrl;
+        this.budKey = process.env.bud_key;
+        this.headers = {
+            authorization: `Bearer ${this.budKey}`,
+            "content-type": "application/json"
+        };
+        this.token = new token_service_1.Token;
     }
 }
 exports.FundWalletService = FundWalletService;

@@ -1,18 +1,24 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-const express_1 = __importDefault(require("express"));
-const check_wallet_balance_1 = require("../../controllers/wallets/operations/check_wallet_balance");
-const set_wallet_PIN_1 = require("../../controllers/wallets/operations/set_wallet_PIN");
-const create_wallet_1 = require("../../controllers/wallets/create_wallet");
-// initialize the wallet class
-const wallet = new create_wallet_1.WalletService();
-// destructure the createWallet function out the instance of Wallets class
-const { createWallet } = wallet;
-const router = express_1.default.Router();
-router.route("/").post(createWallet);
-router.route("/balance").get(check_wallet_balance_1.getWalletBalance);
-router.route("/pin").put(set_wallet_PIN_1.setTransactionPIN);
-router.route("/change_pin").put(set_wallet_PIN_1.changeTransactionPIN);
-module.exports = router;
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.WalletRoutes = void 0;
+const express_1 = require("express");
+const wallet_service_1 = require("../../controllers/wallets/wallet_service");
+const verify_sms_token_1 = require("../../controllers/wallets/utils/verify_sms_token");
+class WalletRoutes {
+    constructor() {
+        this.instantiate = () => {
+            this.router.route("/").patch(verify_sms_token_1.VerifySmsToken.verify);
+            this.router.route("/").post(this.wallet.createWallet);
+            this.router.route("/balance").get(this.wallet.checkBalance);
+            this.router.route("/pin").put(this.wallet.setPin);
+            this.router.route("/change_pin").put(this.wallet.changePin);
+            return this.router;
+        };
+        this.router = (0, express_1.Router)();
+        this.wallet = new wallet_service_1.WalletService;
+        this.instantiate();
+    }
+    ;
+}
+exports.WalletRoutes = WalletRoutes;
+;

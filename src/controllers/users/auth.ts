@@ -1,44 +1,39 @@
-// IMPORT DEPENDENCIES
 import { config } from 'dotenv';
 import {Request, Response} from 'express';
 import { User } from '../../models/User';
 import {StatusCodes, ReasonPhrases} from 'http-status-codes';
 import bcrypt from 'bcrypt';
 import { GenerateOTP } from '../utils/generate_otp';
-import { sendMail } from '../utils/send_mail';
-import { Token } from '../utils/create_token';
+import { SendMail } from '../utils/send_mail';
+import { Token } from './utils/token_service';
 
 config();
 
-
-export class AuthService {
+export class Auth {
     private domain: string;
     private key: string;
     private token: Token;
-    private OTP: GenerateOTP;
+    private OTP: number;
     private mailText: string;
 
     constructor() {
         this.domain = process.env.DOMAIN as string;
-        this.key = process.env.mailgunKey as string; 
-        this.OTP = new GenerateOTP;
-        this.mailText =`<p> Welcome to e-Tranzact. Your One-Time password for your e-Tranzact account is ${this.OTP}.
-        Password is valid for 20 minutes.</p>`
+        this.key = process.env.mailgun_key as string; 
+        this.OTP = new GenerateOTP().instantiate();
+        this.mailText =`<p> Welcome to e-Tranzact. Your One-Time password for your e-Tranzact account is ${this.OTP}. Password is valid for 20 minutes.</p>`;
         this.token = new Token;
     }
 
-    public async signup(req: Request, res: Response) {
+    public signup = async (req: Request, res: Response) => {        
         try {
             const { email, password, confirmPassword } = req.body;
             const checksIfUserExists = await User.findOne({ email }).select("email");
             
-            if(checksIfUserExists) {
-                return res.status(StatusCodes.BAD_REQUEST).send('This user already exists.');
-            } 
+            if(checksIfUserExists)
+                return res.status(StatusCodes.BAD_REQUEST).json('This user already exists.');
             
-            if(password !== confirmPassword) {
-                return res.status(StatusCodes.UNAUTHORIZED).send('Password must match');
-            }
+            if(password !== confirmPassword)
+                return res.status(StatusCodes.UNAUTHORIZED).json('Password must match');
 
             const securePassword = await bcrypt.hash(password, bcrypt.genSaltSync(10));
 
@@ -59,7 +54,7 @@ export class AuthService {
                 html: this.mailText
             }
 
-            await sendMail(this.domain, this.key, messageData);
+           SendMail.send(this.domain, this.key, messageData);
 
             const userCount = await User.countDocuments({});
 
@@ -72,9 +67,9 @@ export class AuthService {
                 { 
                     Success: "USER PROFILE CREATED SUCCESSFULLY!", 
                     message: "A One-Time Password has been sent to your mail",
-                    OTP: user.OTP
+                    // OTP: user.OTP
                 }
-            )
+            );
         } catch (error: any) {
             console.error(error.message);
             return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error.message);
@@ -102,10 +97,11 @@ export class AuthService {
                     }
                 )
 
-            const token = this.token.createToken(
+            const token = this.token.create(
                 profile.email,
                 profile._id,
-                profile.role
+                profile.role,
+                profile.isVerified
             );
 
             return res.status(StatusCodes.OK).json(
@@ -126,7 +122,7 @@ export class AuthService {
                 return req.headers.authorization = undefined;
             } catch (error) {
                 console.error(error)
-                return res.status(StatusCodes.BAD_REQUEST).send(ReasonPhrases.BAD_REQUEST)
+                return res.status(StatusCodes.BAD_REQUEST).json(ReasonPhrases.BAD_REQUEST)
             }
         }
     }

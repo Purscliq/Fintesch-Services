@@ -7,23 +7,23 @@ exports.verifyToken = void 0;
 const dotenv_1 = require("dotenv");
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const http_status_codes_1 = require("http-status-codes");
-const secretKey = process.env.secretKey;
 (0, dotenv_1.config)();
 const verifyToken = async (req, res, next) => {
+    const secret = process.env.secretKey;
+    const authHeader = req.headers.authorization;
+    const token = authHeader.split(" ")[1];
     try {
-        const authHeader = req.headers.authorization;
-        const token = authHeader.split(" ")[1];
-        if (!secretKey)
-            return res.status(http_status_codes_1.StatusCodes.UNAUTHORIZED).send("Provide secret authentication key.");
+        if (!secret)
+            return res.status(http_status_codes_1.StatusCodes.UNAUTHORIZED).json("Provide secret authentication key.");
         if (!token)
-            return res.status(http_status_codes_1.StatusCodes.UNAUTHORIZED).send("Authentication token not detected");
-        const decodedToken = jsonwebtoken_1.default.verify(token, secretKey);
+            return res.status(http_status_codes_1.StatusCodes.UNAUTHORIZED).json("Authentication token not detected");
+        const decodedToken = jsonwebtoken_1.default.verify(token, secret);
         if (!decodedToken)
-            return res.status(http_status_codes_1.StatusCodes.UNAUTHORIZED).send("Token verification failed!");
+            return res.status(http_status_codes_1.StatusCodes.UNAUTHORIZED).json("Token verification failed!");
         return next();
     }
     catch (err) {
-        throw Error("An unexpected error occured with token verification");
+        console.error(err);
     }
 };
 exports.verifyToken = verifyToken;

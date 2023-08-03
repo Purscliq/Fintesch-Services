@@ -5,16 +5,14 @@ if (process.env.NODE_ENV !== 'production') config();
 
 const { MongoURI } = process.env;
 
-if (!MongoURI ) {
+if (!MongoURI )
   throw new Error('MongoDB URI not found in environment variable!');
-}
 
 const options: any = {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 };
 
-// CONNECT TO DATABASE
 export const connectToDatabase = async () => {
   try {
     await mongoose.connect( MongoURI, options );
@@ -24,7 +22,6 @@ export const connectToDatabase = async () => {
   }
 };
 
-// DISCONNECT FROM DATABASE
 export const disconnectFromDatabase = async () => {
   try {
     await mongoose.disconnect();

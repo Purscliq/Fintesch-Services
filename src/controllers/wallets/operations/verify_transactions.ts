@@ -1,6 +1,6 @@
 import { config } from "dotenv";
 import axios from "axios";
-import { headerType } from "../../../types_interfaces";
+import { HeaderType } from "../../../types_interfaces";
 // import { decodeToken } from "../../utils/decode_token";
 // import { JwtPayload } from "jsonwebtoken";
 // import { Request, Response } from "express";
@@ -9,7 +9,7 @@ config();
 
 export class VerifyTransactions {
     private budKey: string;
-    private headers: headerType
+    private headers: HeaderType
 
     constructor() {
         this.budKey = process.env.bud_key as string;
@@ -19,12 +19,11 @@ export class VerifyTransactions {
         };
     }
 
-    public verify = async (url: string, data: any) => {
+    public async verify(url: string, data: any) {
         try {
-        
             const response = await axios.get(url, { headers: this.headers });
 
-            if (!response) throw null;
+            if (!response) throw 'null value was returned';
 
             const result = response.data;
 
@@ -32,11 +31,11 @@ export class VerifyTransactions {
                 result.status !== true && 
                 data.currency !== result.data.currency
               ) 
-                throw("Invalid transaction");
+                throw "Invalid transaction";
 
             return result;
         } catch(error: any) {
-            throw new Error(error);
+            console.error(error);
         }
     } 
 }

@@ -3,24 +3,25 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.sendMail = void 0;
+exports.SendMail = void 0;
 const mailgun_js_1 = __importDefault(require("mailgun-js"));
-// send Mail function
-const sendMail = async (domain, key, messageData) => {
-    const mailgun = new mailgun_js_1.default({
-        apiKey: key,
-        domain: domain
-    });
-    try {
-        await mailgun.messages().send(messageData, (error, body) => {
-            if (error)
-                throw new Error(error);
-            console.log(body);
+class SendMail {
+    static async send(domain, key, messageData) {
+        const mailgun = new mailgun_js_1.default({
+            apiKey: key,
+            domain: domain
         });
-        console.log("Mail sent", messageData);
+        try {
+            await mailgun.messages().send(messageData, (error, body) => {
+                if (error)
+                    throw new Error(error.message);
+                console.log(body);
+            });
+            console.log("Mail sent", messageData);
+        }
+        catch (error) {
+            console.error(error.message);
+        }
     }
-    catch (error) {
-        throw error;
-    }
-};
-exports.sendMail = sendMail;
+}
+exports.SendMail = SendMail;

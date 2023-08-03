@@ -1,28 +1,24 @@
 import { Router } from 'express';
-import { Balance } from '../../controllers/wallets/operations/manage_wallet_balance';
-import { TransactionPIN } from '../../controllers/wallets/operations/manage_wallet_Pin';
-import { WalletService } from '../../controllers/wallets/create_wallet';
+import { WalletService } from '../../controllers/wallets/wallet_service';
+import { VerifySmsToken } from '../../controllers/wallets/utils/verify_sms_token';
 
 export class WalletRoutes {
     private router: Router;
     private wallet: WalletService;
-    private balance: Balance;
-    private managePin: TransactionPIN;
-
 
     constructor() {
         this.router = Router();
-        this.wallet = new WalletService();
-        this.balance = new Balance();
-        this.managePin = new TransactionPIN();
-    }
+        this.wallet = new WalletService;
+        this.instantiate();
+    };
 
-    public instantiate() {
+    public instantiate = () => {
+        this.router.route("/").patch(VerifySmsToken.verify);
         this.router.route("/").post(this.wallet.createWallet);
-        this.router.route("/balance").get(this.balance.getWalletBalance);
-        this.router.route("/pin").put(this.managePin.setPin);
-        this.router.route("/change_pin").put(this.managePin.changePin);
+        this.router.route("/balance").get(this.wallet.checkBalance);
+        this.router.route("/pin").put(this.wallet.setPin);
+        this.router.route("/change_pin").put(this.wallet.changePin);
 
         return this.router;
     }
-}
+};

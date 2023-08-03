@@ -2,29 +2,26 @@ import { config } from 'dotenv'
 import jwt, { JwtPayload } from 'jsonwebtoken'
 import { Request, Response, NextFunction } from 'express'
 import { StatusCodes } from 'http-status-codes'
-const secretKey = process.env.secretKey;
 
-config()
+config();
 
 export const verifyToken = async (req: Request, res: Response, next: NextFunction) => {
+    const secret = process.env.secretKey;
+    const authHeader = req.headers.authorization as string;
+    const token = authHeader.split(" ")[1];
+
     try {
-        const authHeader = req.headers.authorization as string;
-        const token = authHeader.split(" ")[1];
+        if(!secret) return res.status(StatusCodes.UNAUTHORIZED).json("Provide secret authentication key.");
 
-        if(!secretKey)
-            return res.status(StatusCodes.UNAUTHORIZED).send("Provide secret authentication key.");
-
-        if(!token)
-            return res.status(StatusCodes.UNAUTHORIZED).send("Authentication token not detected");
+        if(!token) return res.status(StatusCodes.UNAUTHORIZED).json("Authentication token not detected");
         
-       const decodedToken = jwt.verify(token, secretKey) as JwtPayload;
+       const decodedToken = jwt.verify(token, secret) as JwtPayload;
        
-        if(!decodedToken)
-            return res.status(StatusCodes.UNAUTHORIZED).send("Token verification failed!");
+        if(!decodedToken) return res.status(StatusCodes.UNAUTHORIZED).json("Token verification failed!");
 
         return next();
     } 
     catch( err: any ) {
-        throw Error("An unexpected error occured with token verification");
+        console.error(err);
     }
 }

@@ -1,50 +1,67 @@
 import { config } from 'dotenv'
 import axios from 'axios'
-import { Request, Response } from "express"
-import { JwtPayload } from 'jsonwebtoken'
-import { StatusCodes } from 'http-status-codes'
-import { generateRefID } from '../../utils/generate_ref'
-import { decodeToken } from '../../utils/decode_token'
-import { KYC } from '../../../models/KYC'
+import { Request, Response } from "express";
+import { JwtPayload } from 'jsonwebtoken';
+import { StatusCodes } from 'http-status-codes';
+import { RefGenerator } from '../../utils/generate_ref';
+import { Token } from '../../users/utils/token_service';
+import { KYC } from '../../../models/KYC';
+import { HeaderType } from '../../../types_interfaces';
 
-config()
+config();
 
-const budKey = process.env.bud_key as string
+export class OneTimePayment {
+    private headers: HeaderType;
+    private budKey: string;
+    private budBaseUrl: string;
+    private reference: string;
+    private token: Token;
 
-export const acceptMoney = async(req:Request, res:Response) => {
-    const authHeader = req.headers.authorization as string
-    const data = decodeToken(authHeader.split(" ")[1]) as JwtPayload
-    const kyc = await KYC.findOne({ user: data.userId })
-    const reference = generateRefID()
-    const url = "https://api.budpay.com/api/s2s/banktransfer/initialize"
-
-    // set headers
-    const headers = {
-        authorization: `Bearer ${budKey}`,
-        "content-type": "application/json"
+    constructor() {
+        this.budKey = process.env.bud_key as string;
+        this.headers = {
+            authorization: `Bearer ${this.budKey}`,
+            "content-type": "application/json"
+        };
+        this.budBaseUrl = process.env.budBaseUrl as string;
+        this.reference = new RefGenerator().instantiate();
+        this.token = new Token;
     }
 
-    try {
-        if(!kyc) 
-            return res.status(StatusCodes.NOT_FOUND).send("Not Found")
-        if(!kyc.status)
-            return res.status(StatusCodes.NOT_FOUND).send("KYC not complete")
+    // not tested
+    public acceptMoney = async (req: Request, res: Response) => {
+        const authHeader = req.headers.authorization as string;
+        const data = this.token.decode(authHeader.split(" ")[1]) as JwtPayload;
 
-        const name = kyc.firstName + " " + kyc.otherNames + " " + kyc.lastName
-        const { amount } = req.body
+        const kyc = await KYC.findOne({ user: data.userId });
 
-        const paymentData = {
-            email: data.email,
-            amount,
-            currency: "NGN",
-            reference,
-            name
+        const url = `${this.budBaseUrl}/s2s/banktransfer/initialize`;
+    
+        try {
+            if(!kyc) 
+                return res.status(StatusCodes.BAD_REQUEST).json("Request could not be completed");
+
+            if(!kyc.status)
+                return res.status(StatusCodes.BAD_REQUEST).json("KYC not complete");
+    
+            const name = kyc.firstName + " " + kyc.otherNames + " " + kyc.lastName;
+
+            const { amount } = req.body;
+    
+            const paymentData = {
+                email: data.email,
+                amount,
+                currency: "NGN",
+                reference: this.reference,
+                name
+            }
+    
+            const response = await axios.post(url, paymentData, { headers: this.headers })
+            const info = response.data
+            return res.status(StatusCodes.OK).json(info)
+        } catch(error:any) {
+            throw error
         }
-
-        const response = await axios.post(url, paymentData, { headers })
-        const info = response.data
-        return res.status(StatusCodes.OK).json(info)
-    } catch(error:any) {
-        throw error
     }
 }
+

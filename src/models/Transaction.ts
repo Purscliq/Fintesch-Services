@@ -34,4 +34,4 @@ const transactionSchema = new Schema<Transaction>({
     { timestamps: true }
 )
 
-export const Transaction = model("Transaction", transactionSchema)
+export const Transaction = model("Transaction", transactionSchema);

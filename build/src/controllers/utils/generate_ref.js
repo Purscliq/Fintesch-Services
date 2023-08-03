@@ -1,20 +1,15 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.generateRefID = void 0;
-function generateRefID() {
-    const prefix = "TRF_";
-    const currentMonth = String(new Date().getUTCMonth() + 1).padStart(2, "0");
-    const currentDateArray = new Date().toUTCString().split(" ");
-    const time = currentDateArray[4].split(":").join("");
-    //date(00), month(00), year(0000) and time(00:00:00)
-    const num = currentDateArray[1].padStart(2, "0") + currentMonth + currentDateArray[3] + time;
-    const reference = prefix + num;
-    return reference;
+exports.RefGenerator = void 0;
+class RefGenerator {
+    constructor() {
+        this.instantiate = () => this.reference;
+        this.prefix = "TRF_";
+        this.currentMonth = String(new Date().getUTCMonth() + 1).padStart(2, "0");
+        this.currentDateArray = new Date().toUTCString().split(" ");
+        this.time = this.currentDateArray[4].split(":").join("");
+        this.num = this.currentDateArray[1].padStart(2, "0") + this.currentMonth + this.currentDateArray[3] + this.time;
+        this.reference = this.prefix + this.num;
+    }
 }
-exports.generateRefID = generateRefID;
-// const characters = "1234567890"
-//     let randomChar = ""
-//     for(let i = 0; i < length; i++) {
-//         let randomIndex = Math.floor(Math.random() * characters.length)
-//         randomChar += characters.charAt(randomIndex)
-//     }
+exports.RefGenerator = RefGenerator;

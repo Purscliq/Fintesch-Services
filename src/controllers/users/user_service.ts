@@ -1,39 +1,28 @@
-//IMPORT DEPENDENCIES
-import { config } from 'dotenv'
-import { AuthService} from "./auth"
-import { Profile } from './profile'
+import { config } from 'dotenv';
+import { Auth } from "./auth";
+import { Profile } from './profile';
 import { Request, Response } from 'express';
 
 config();
 
-export class UserService {
-    private authservice: AuthService;
+export class Users {
+    private auth: Auth;
     private profile: Profile;
 
     constructor() {
-        this.authservice = new AuthService;
+        this.auth = new Auth;
         this.profile = new Profile;
     }
 
-    public signup(req: Request, res: Response) {
-        return this.authservice.signup(req, res);
-    }
+    public signup = (req: Request, res: Response) => this.auth.signup(req, res);
     
-    public signin(req: Request, res: Response) {
-        return this.authservice.signin(req, res);
-    }
+    public signin = (req: Request, res: Response) => this.auth.signin(req, res);
 
-    public signout(req: Request, res: Response) {
-        return this.authservice.signout(req, res);
-    }
+    public signout = (req: Request, res: Response) => this.auth.signout(req, res);
 
-    public viewProfile(req: Request, res: Response) {
-        return this.profile.viewProfile(req, res)
-    }
-    public updateProfile(req: Request, res: Response) {
-        return this.profile.updateProfile(req, res)
-    }
-    public deleteProfile(req: Request, res: Response) {
-        return this.profile.deleteProfile(req, res)
-    }
+    public viewProfile = (req: Request, res: Response) => this.profile.viewProfile(req, res);
+
+    public updateProfile = (req: Request, res: Response) => this.profile.updateProfile(req, res);
+
+    public deleteProfile = (req: Request, res: Response) => this.profile.deleteProfile(req, res);
 }

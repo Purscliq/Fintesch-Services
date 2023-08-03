@@ -1,5 +1,14 @@
-import express from 'express'
-const router = express.Router()
+import { Router } from 'express';
 
-
-export = router
+export class CardManagementRoute {
+    private router: Router;
+  
+    constructor() {
+        this.router = Router();
+        this.instantiate();
+    };
+    
+    public instantiate = () => {
+        return this.router;
+    }
+}

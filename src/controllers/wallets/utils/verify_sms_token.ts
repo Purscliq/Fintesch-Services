@@ -1,9 +1,9 @@
 import { Request, Response } from "express";
-import { KYC } from "../../models/KYC";
+import { KYC } from "../../../models/KYC";
 import { StatusCodes } from "http-status-codes";
 
 export class VerifySmsToken {
-    public verify = async (req: Request, res: Response) => {
+    public static verify = async (req: Request, res: Response) => {
         try {
             const { OTP } = req.body;
             const kyc = await KYC.findOne({ OTP }).select("OTP")
@@ -17,12 +17,10 @@ export class VerifySmsToken {
             kyc.OTP = undefined;
             await kyc.save();
     
-            return res.status(StatusCodes.OK).json({
-                Success: "Verification was successful" 
-            })
+            return res.status(StatusCodes.OK).redirect('/api/wallet')
     
         } catch(error: any) {
-            throw error;
+            console.error(error);
         }
     } 
 }

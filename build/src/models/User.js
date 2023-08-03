@@ -7,11 +7,6 @@ exports.User = void 0;
 const mongoose_1 = require("mongoose");
 const validator_1 = __importDefault(require("validator"));
 const userSchema = new mongoose_1.Schema({
-    data: {
-        type: mongoose_1.Schema.Types.ObjectId,
-        ref: "KYC",
-        unique: true,
-    },
     email: {
         type: String,
         required: [true, "This field is required"],
@@ -28,8 +23,8 @@ const userSchema = new mongoose_1.Schema({
     },
     role: {
         type: String,
-        enum: { values: ['Individual', 'Business', 'Admin'], message: '{VALUE} is not supported' },
-        default: 'Individual'
+        enum: { values: ['individual', 'business', 'admin'], message: '{VALUE} is not supported' },
+        default: 'individual'
     },
     OTP: Number,
     status: {

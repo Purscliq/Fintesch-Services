@@ -1,7 +1,7 @@
 import Mailgun from 'mailgun-js';
 
-// send Mail function
-export const sendMail = async ( domain: string, key: string, messageData: any ) => {
+export class SendMail {
+  public static async send( domain: string, key: string, messageData: any ) {
     const mailgun = new Mailgun({ 
           apiKey: key, 
           domain: domain 
@@ -10,13 +10,14 @@ export const sendMail = async ( domain: string, key: string, messageData: any ) 
     try {
       await mailgun.messages().send(messageData, (error: any, body) => {
         if(error)
-            throw new Error(error);
-
+            throw new Error(error.message);
             console.log(body);
         });
 
       console.log("Mail sent", messageData);
     } catch(error: any) {
-        throw error;
+        console.error(error.message);
       }
   }
+
+} 

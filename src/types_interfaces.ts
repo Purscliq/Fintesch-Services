@@ -1,4 +1,4 @@
-export type headerType = {
+export type HeaderType = {
     authorization: string;
     'content-type': string
 }

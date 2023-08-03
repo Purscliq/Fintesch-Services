@@ -1,4 +1,4 @@
-// IMPORT MONGOOSE.SCHEMA, MONGOOSE.MODEL, MONGOOSE.INFERSCHEMA
+// IMPORT MONGOOSE.SCHEMA, MONGOOSE.MODEL, MONGOOSE.INFERSCHEMATYPE
 import { Schema, model, InferSchemaType } from 'mongoose'
 type Wallet = InferSchemaType<typeof Schema>
 

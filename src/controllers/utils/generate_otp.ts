@@ -4,12 +4,10 @@ export class GenerateOTP {
   private OTP: number;
 
   constructor() {
-    this.min = 100000; // Minimum value (inclusive)
-    this.max = 999999; // Maximum value (inclusive)
+    this.min = 100000;
+    this.max = 999999;
     this.OTP = Math.floor(Math.random() * (this.max - this.min + 1)) + this.min;
   }
  
-  public instantiate() {
-    return this.OTP;
-  } 
+  public instantiate = () => this.OTP;
 }
