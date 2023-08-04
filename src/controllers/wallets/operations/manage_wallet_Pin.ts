@@ -30,12 +30,12 @@ export class TransactionPin {
 
       return res.status(StatusCodes.OK).json(
           {
-            Success: "PIN has been successfully set",
-            PIN: wallet.PIN,
+            Success: "PIN has been successfully set!"
           }
       );
     } catch (error: any) {
         console.error(error);
+        return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error.message);
       }
   };
 
@@ -68,7 +68,7 @@ export class TransactionPin {
       );
     } catch (error: any) {
         console.error(error);
-        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error.message);
+        return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error.message);
     }
   };
 }

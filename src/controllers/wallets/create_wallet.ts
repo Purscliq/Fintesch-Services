@@ -100,12 +100,14 @@ export class Wallets {
           domain: info.data.domain,
         };
 
-        // store account details to customer database
         const wallet = new Wallet(accountData);
         await wallet.save();
-        return res.status(StatusCodes.OK).json({
-
-        })
+        return res.status(StatusCodes.OK).json(
+          {
+            message: "Wallet creation successful",
+            wallet: info.data
+          }
+        );
 
       } catch (error: any) {
           console.error(error);
