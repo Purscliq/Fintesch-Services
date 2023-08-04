@@ -16,7 +16,6 @@ const viewAllUsers = async (req, res) => {
     }
 };
 exports.viewAllUsers = viewAllUsers;
-// VIEW ONE USER
 const viewSpecificUser = async (req, res) => {
     try {
         const user = await User_1.User.findOne({ _id: req.params.id });

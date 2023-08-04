@@ -19,7 +19,9 @@ const BillSchema = new Schema<Bills>(
         },
 
         code: String,
+        
         message: String,
+
         payment_data: {
             meter_number: String,
             electricity: String,

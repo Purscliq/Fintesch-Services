@@ -7,7 +7,7 @@ export class QuickServicesRoute {
 
     constructor() {
         this.router = Router();
-        this.topup = new TopUpService();
+        this.topup = new TopUpService;
         this.instantiate();
     };
 

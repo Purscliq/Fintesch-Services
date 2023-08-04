@@ -1,7 +1,4 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AppRoutes = void 0;
 const express_1 = require("express");
@@ -17,7 +14,7 @@ const wallet_management_route_2 = require("./adminRoute/wallet_management_route"
 const transaction_management_route_1 = require("./adminRoute/transaction_management_route");
 const user_management_route_1 = require("./adminRoute/user_management_route");
 const card_management_route_1 = require("./adminRoute/card_management_route");
-const updateBalance_route_1 = __importDefault(require("./clientRoute/updateBalance_route"));
+const updateBalance_route_1 = require("./clientRoute/updateBalance_route");
 const authenticate_1 = require("../../middlewares/authenticate");
 const check_role_1 = require("../../middlewares/check_role");
 class AppRoutes {
@@ -31,7 +28,7 @@ class AppRoutes {
             this.router.use("/api/kyc", new kyc_verification_route_1.KycRoute().instantiate);
             this.router.use("/api/wallet", new wallet_management_route_1.WalletRoutes().instantiate);
             this.router.use("/api/transaction", new transaction_route_1.TransactionsRoute().instantiate);
-            this.router.use("/api/transaction/update_bal", updateBalance_route_1.default);
+            this.router.use("/api/transaction/update_bal", new updateBalance_route_1.BalanceUpdateRoute().instantiate);
             this.router.use("/services", new quickservices_route_1.QuickServicesRoute().instantiate);
             this.router.use("/api/admin/users", new user_management_route_1.UserManagementRoute().instantiate);
             this.router.use("/api/admin/wallet", new wallet_management_route_2.WalletManagementRoute().instantiate);

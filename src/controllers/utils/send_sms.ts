@@ -5,16 +5,18 @@ config();
 
 export class SendSMS {
     private termiKey: string;
+    private termiBaseUrl: string;
     private headers = {
         'Content-Type': ['application/json', 'application/json']
-      }
+      };
 
     constructor() {
         this.termiKey = process.env.termiKey as string;
-    }
+        this.termiBaseUrl = process.env.termi_baseUrl as string;
+    };
 
     public getSenderId = async () => {
-        const url = `https://api.ng.termii.com/api/sender-id?api_key=${this.termiKey}`
+        const url = `${this.termiBaseUrl}/sender-id?api_key=${this.termiKey}`
     
         const response = await axios.get(url, { headers: this.headers });
         const result = response.data;
@@ -23,7 +25,7 @@ export class SendSMS {
     }
     
    public sendOtp = async (phoneNumber: string, OTP: Number) => {
-        const termiiUrl = "https://api.ng.termii.com/api/sms/send";
+        const termiiUrl = `${this.termiBaseUrl}/sms/send`;
     
         const senderID = await new SendSMS().getSenderId();
     

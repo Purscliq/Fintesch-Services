@@ -1,4 +1,3 @@
-// IMPORT DEPENDENCIES
 import { config } from 'dotenv';
 import { Request, Response } from "express";
 import axios from 'axios';

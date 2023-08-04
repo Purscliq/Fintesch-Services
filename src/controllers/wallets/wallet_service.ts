@@ -17,15 +17,15 @@ export class WalletService {
         this.wallet = new Wallets;
     }
 
-    createWallet = (req: Request, res: Response) => this.wallet.createWallet(req, res);
+    public createWallet = (req: Request, res: Response) => this.wallet.createWallet(req, res);
 
-    fund = (req: Request, res: Response) => this.fundWallet.fundWallet(req, res);
+    public fund = (req: Request, res: Response) => this.fundWallet.fundWallet(req, res);
 
-    checkBalance = (req: Request, res: Response) => this.balance.getWalletBalance(req, res);
+    public checkBalance = (req: Request, res: Response) => this.balance.getWalletBalance(req, res);
 
-    updateBalance = (req: Request, res: Response) => this.balance.updateBalance(req, res);
+    public updateBalance = (req: Request, res: Response) => this.balance.updateBalance(req, res);
 
-    setPin = (req: Request, res: Response) => this.transactionPin.setPin(req, res);
+    public setPin = (req: Request, res: Response) => this.transactionPin.setPin(req, res);
 
-    changePin = (req: Request, res: Response) => this.transactionPin.changePin(req, res);
+    public changePin = (req: Request, res: Response) => this.transactionPin.changePin(req, res);
 }

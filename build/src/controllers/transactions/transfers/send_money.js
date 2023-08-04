@@ -4,7 +4,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.SendMoneyService = void 0;
-// IMPORT DEPENDENCIES
 const dotenv_1 = require("dotenv");
 const axios_1 = __importDefault(require("axios"));
 const http_status_codes_1 = require("http-status-codes");

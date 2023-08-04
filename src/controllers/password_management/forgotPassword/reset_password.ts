@@ -5,23 +5,28 @@ import bcrypt from 'bcrypt';
 
 
 export class ResetPassword {
-    public async reset(req: Request, res: Response) {
+    public static async reset(req: Request, res: Response) {
         const id = req.params.id;
         const { newPassword, confirmNewPassword } = req.body;
 
         try {
-            if(newPassword !== confirmNewPassword) 
-                return res.status(StatusCodes.UNAUTHORIZED).json({ Error: "Passwords must match" });
+            if(newPassword !== confirmNewPassword) return res.status(StatusCodes.UNAUTHORIZED).json(
+                { 
+                    Error: "Passwords must match" 
+                }
+            );
 
             const user = await User.findOne({ _id: id });
 
-            if(!user) 
-                return res.status(StatusCodes.BAD_REQUEST).json({ Error: "Bad Request: Request could not be completed" });
+            if(!user) return res.status(StatusCodes.BAD_REQUEST).json(
+                { 
+                    Error: "Bad Request: Request could not be completed" 
+                }
+            );
             
             const verifyPassword = await bcrypt.compare(newPassword, user.password);
 
-            if(verifyPassword) 
-                return res.status(StatusCodes.BAD_REQUEST).send("You cannot use an old password");
+            if(verifyPassword) return res.status(StatusCodes.BAD_REQUEST).json("You cannot use an old password");
 
             const securePass = await bcrypt.hash(newPassword, bcrypt.genSaltSync(10));
 
@@ -40,7 +45,7 @@ export class ResetPassword {
 
         } catch (error: any) {
             console.error(error);
-            return res.status(201).json(error.message);
+            return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error.message);
         }
     };
 }

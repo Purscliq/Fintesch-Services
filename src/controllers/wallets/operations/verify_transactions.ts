@@ -1,9 +1,6 @@
 import { config } from "dotenv";
 import axios from "axios";
 import { HeaderType } from "../../../types_interfaces";
-// import { decodeToken } from "../../utils/decode_token";
-// import { JwtPayload } from "jsonwebtoken";
-// import { Request, Response } from "express";
 
 config();
 

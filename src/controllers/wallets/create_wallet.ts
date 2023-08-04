@@ -24,7 +24,7 @@ export class Wallets {
           'content-type': 'application/json'
       };
       this.token = new Token;
-  }
+  };
  
   public createCustomer = async (req: Request, res: Response) => {
     const authHeader = req.headers.authorization as string;
@@ -55,10 +55,9 @@ export class Wallets {
         const response = await axios.post(CustomerCreationEndPoint, customer, { headers: this.headers });
         const customerCode = response.data.data.customer_code;
         return customerCode;
-
       } catch (error: any) {
           console.log(error);
-          throw error;
+          res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error.message);
         }
       };
 
@@ -79,13 +78,12 @@ export class Wallets {
 
         const info = response.data;
 
-        if(!info || info.status !== true) {
-          return res.status(StatusCodes.BAD_REQUEST).json({ 
-            error: "Transaction Failed" 
-          });
-        }
+        if (!info || info.status !== true) return res.status(StatusCodes.BAD_REQUEST).json(
+            { 
+              error: "Transaction Failed" 
+            }
+          );
 
-        // account model payload
         const accountData = {
           user: userPayload.userId,
           id: info.data.id,

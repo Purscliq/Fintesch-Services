@@ -12,7 +12,7 @@ import { WalletManagementRoute } from "./adminRoute/wallet_management_route";
 import { TransactionManagementRoute } from "./adminRoute/transaction_management_route";
 import { UserManagementRoute } from "./adminRoute/user_management_route";
 import { CardManagementRoute } from "./adminRoute/card_management_route";
-import updateBalance from './clientRoute/updateBalance_route';
+import { BalanceUpdateRoute } from './clientRoute/updateBalance_route';
 
 import { verifyToken } from '../../middlewares/authenticate';
 import { CheckRole } from '../../middlewares/check_role';
@@ -33,7 +33,7 @@ export class AppRoutes {
         this.router.use("/api/kyc", new KycRoute().instantiate);
         this.router.use("/api/wallet", new WalletRoutes().instantiate);
         this.router.use("/api/transaction", new TransactionsRoute().instantiate);
-        this.router.use("/api/transaction/update_bal", updateBalance);
+        this.router.use("/api/transaction/update_bal", new BalanceUpdateRoute().instantiate);
         this.router.use("/services", new QuickServicesRoute().instantiate);
         this.router.use("/api/admin/users", new UserManagementRoute().instantiate);
         this.router.use("/api/admin/wallet", new WalletManagementRoute().instantiate);

@@ -8,18 +8,22 @@ const http_status_codes_1 = require("http-status-codes");
 const User_1 = require("../../../models/User");
 const bcrypt_1 = __importDefault(require("bcrypt"));
 class ResetPassword {
-    async reset(req, res) {
+    static async reset(req, res) {
         const id = req.params.id;
         const { newPassword, confirmNewPassword } = req.body;
         try {
             if (newPassword !== confirmNewPassword)
-                return res.status(http_status_codes_1.StatusCodes.UNAUTHORIZED).json({ Error: "Passwords must match" });
+                return res.status(http_status_codes_1.StatusCodes.UNAUTHORIZED).json({
+                    Error: "Passwords must match"
+                });
             const user = await User_1.User.findOne({ _id: id });
             if (!user)
-                return res.status(http_status_codes_1.StatusCodes.BAD_REQUEST).json({ Error: "Bad Request: Request could not be completed" });
+                return res.status(http_status_codes_1.StatusCodes.BAD_REQUEST).json({
+                    Error: "Bad Request: Request could not be completed"
+                });
             const verifyPassword = await bcrypt_1.default.compare(newPassword, user.password);
             if (verifyPassword)
-                return res.status(http_status_codes_1.StatusCodes.BAD_REQUEST).send("You cannot use an old password");
+                return res.status(http_status_codes_1.StatusCodes.BAD_REQUEST).json("You cannot use an old password");
             const securePass = await bcrypt_1.default.hash(newPassword, bcrypt_1.default.genSaltSync(10));
             const updatedPass = await User_1.User.findOneAndUpdate({ _id: id }, { password: securePass }, { new: true, runValidators: true });
             return res.status(http_status_codes_1.StatusCodes.OK).json({
@@ -29,7 +33,7 @@ class ResetPassword {
         }
         catch (error) {
             console.error(error);
-            return res.status(201).json(error.message);
+            return res.status(http_status_codes_1.StatusCodes.INTERNAL_SERVER_ERROR).json(error.message);
         }
     }
     ;

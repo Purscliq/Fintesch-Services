@@ -6,7 +6,6 @@ import {Wallet} from "../../../models/Wallet"
 import { Transaction } from '../../../models/Transaction'
 import { VerifyTransactions } from './verify_transactions'
 
-
 export class Balance {
     private budBaseUrl: string;
     private token: Token;
@@ -16,7 +15,7 @@ export class Balance {
         this.token = new Token;
     }
   
-    public async getWalletBalance(req: Request, res: Response) {
+    public getWalletBalance = async (req: Request, res: Response) => {
         const authHeader = req.headers.authorization as string;
         const userPayload = this.token.decode(authHeader.split(" ")[1]) as JwtPayload;
 
@@ -31,7 +30,7 @@ export class Balance {
         }
     }
 
-    public async updateBalance(req: Request, res: Response) {
+    public updateBalance = async (req: Request, res: Response) => {
         const authHeader = req.headers.authorization as string;
         const userPayload = this.token.decode(authHeader.split(" ")[1]) as JwtPayload;
         const { notify, notifyType, data } = req.body;

@@ -11,7 +11,7 @@ export class TransactionPin {
     this.token = new Token;
   }
 
-  public async setPin(req: Request, res: Response) {
+  public setPin = async (req: Request, res: Response) => {
     const { PIN } = req.body;
     const authHeader = req.headers.authorization as string;
     const userPayload = this.token.decode(authHeader.split(" ")[1]) as JwtPayload;
@@ -19,10 +19,11 @@ export class TransactionPin {
     try {
       const wallet = await Wallet.findOne({ user: userPayload.userId }).select("PIN");
 
-      if (!wallet)
-        return res
-          .status(StatusCodes.BAD_REQUEST)
-          .json({ message: "Bad Request: account could not be retrieved" });
+      if (!wallet) return res.status(StatusCodes.BAD_REQUEST).json(
+            { 
+                message: "Bad Request: account could not be retrieved"
+            }
+        );
 
       wallet.PIN = Number(PIN);
       await wallet.save();
@@ -38,7 +39,7 @@ export class TransactionPin {
       }
   };
 
-  public async changePin(req: Request, res: Response) {
+  public changePin = async (req: Request, res: Response) => {
     try {
       const { newPIN } = req.body;
       const authHeader = req.headers.authorization as string;
@@ -53,17 +54,21 @@ export class TransactionPin {
         }
       ).select("PIN");
 
-      if (!wallet)
-        return res
-        .status(StatusCodes.BAD_REQUEST)
-        .json({ message: "Bad Request: account could not be retrieved" });
+      if (!wallet) return res.status(StatusCodes.BAD_REQUEST).json(
+            { 
+                message: "Bad Request: account could not be retrieved" 
+            }
+        );
 
-      return res.status(StatusCodes.OK).json({
-        Success: "PIN has been successfully changed",
-        PIN: wallet.PIN,
-      });
+      return res.status(StatusCodes.OK).json(
+        {
+            Success: "PIN has been successfully changed",
+            PIN: wallet.PIN
+        }
+      );
     } catch (error: any) {
-      throw error;
+        console.error(error);
+        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error.message);
     }
   };
 }

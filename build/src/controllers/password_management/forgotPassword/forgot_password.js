@@ -1,7 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ForgotPassword = void 0;
-// IMPORT DEPENDENCIES
 const dotenv_1 = require("dotenv");
 const http_status_codes_1 = require("http-status-codes");
 const User_1 = require("../../../models/User");

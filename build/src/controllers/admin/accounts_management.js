@@ -24,7 +24,6 @@ const viewAllAccounts = async (req, res) => {
     }
 };
 exports.viewAllAccounts = viewAllAccounts;
-// VIEW ONE ACCOUNT
 const viewAccount = async (req, res) => {
     try {
         const account = await Wallet_1.Wallet.findOne({ _id: req.params.id }).select("firstName lastName email");
@@ -96,7 +95,6 @@ const closeAccount = async (req, res) => {
     }
 };
 exports.closeAccount = closeAccount;
-// retreive wallet balance
 const getWalletBalance = async () => {
     const balanceUrl = "https://api.budpay.com/api/v2/wallet_balance/NGN";
     const header = {

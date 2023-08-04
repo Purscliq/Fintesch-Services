@@ -29,11 +29,9 @@ export class Auth {
             const { email, password, confirmPassword } = req.body;
             const checksIfUserExists = await User.findOne({ email }).select("email");
             
-            if(checksIfUserExists)
-                return res.status(StatusCodes.BAD_REQUEST).json('This user already exists.');
+            if(checksIfUserExists) return res.status(StatusCodes.BAD_REQUEST).json('This user already exists.');
             
-            if(password !== confirmPassword)
-                return res.status(StatusCodes.UNAUTHORIZED).json('Password must match');
+            if(password !== confirmPassword) return res.status(StatusCodes.UNAUTHORIZED).json('Password must match');
 
             const securePassword = await bcrypt.hash(password, bcrypt.genSaltSync(10));
 
@@ -56,9 +54,9 @@ export class Auth {
 
            SendMail.send(this.domain, this.key, messageData);
 
-            const userCount = await User.countDocuments({});
+            const noOfUsers = await User.countDocuments({});
 
-            if(userCount === 0) {
+            if ( noOfUsers === 0 ) {
                 user.role = "Admin"
                 await user.save();
             }
@@ -66,8 +64,7 @@ export class Auth {
             return res.status(StatusCodes.OK).json(
                 { 
                     Success: "USER PROFILE CREATED SUCCESSFULLY!", 
-                    message: "A One-Time Password has been sent to your mail",
-                    // OTP: user.OTP
+                    message: "A One-Time Password has been sent to your mail"
                 }
             );
         } catch (error: any) {
@@ -76,7 +73,7 @@ export class Auth {
         }
     }
 
-    public async signin(req: Request, res: Response) {
+    public signin = async (req: Request, res: Response) => {
         try {
             const { email, password } = req.body;
             const profile = await User.findOne({ email }).select("email password");
@@ -90,12 +87,11 @@ export class Auth {
            
             const isPasswordMatch = await bcrypt.compare(password, profile.password);
 
-            if (!isPasswordMatch)
-                return res.status(StatusCodes.UNAUTHORIZED).json(
-                    { 
-                        message: "The password you entered is incorrect" 
-                    }
-                )
+            if (!isPasswordMatch) return res.status(StatusCodes.UNAUTHORIZED).json(
+                { 
+                    message: "The password you entered is incorrect"
+                }
+            );
 
             const token = this.token.create(
                 profile.email,
@@ -111,13 +107,13 @@ export class Auth {
                 }
             );
             
-        } catch( error: any ) {
+        } catch ( error: any ) {
             console.error(error) 
             return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error.message)
         }
     };
 
-    public async signout(req: Request, res: Response) {
+    public signout = async (req: Request, res: Response) => {
         try {
                 return req.headers.authorization = undefined;
             } catch (error) {

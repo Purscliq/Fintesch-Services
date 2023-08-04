@@ -11,7 +11,7 @@ class QuickServicesRoute {
             return this.router;
         };
         this.router = (0, express_1.Router)();
-        this.topup = new top_up_1.TopUpService();
+        this.topup = new top_up_1.TopUpService;
         this.instantiate();
     }
     ;

@@ -19,7 +19,9 @@ const TopUpSchema = new Schema<TopUp>(
         },
 
         code: String,
+
         message: String,
+        
         payment_data: {
             "network": String,
             "phone": String,

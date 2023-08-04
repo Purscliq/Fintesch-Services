@@ -6,9 +6,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.VerifyTransactions = void 0;
 const dotenv_1 = require("dotenv");
 const axios_1 = __importDefault(require("axios"));
-// import { decodeToken } from "../../utils/decode_token";
-// import { JwtPayload } from "jsonwebtoken";
-// import { Request, Response } from "express";
 (0, dotenv_1.config)();
 class VerifyTransactions {
     constructor() {

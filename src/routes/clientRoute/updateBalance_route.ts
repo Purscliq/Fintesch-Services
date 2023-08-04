@@ -1,9 +1,14 @@
-// IMPORT ROUTER
-import express from 'express'
-const router = express.Router()
-// import { updateBalance } from '../../controllers/wallets/operations/webhook'
+import { Router } from 'express';
 
-// router.route("/")
-//     .patch( updateBalance )
-
-export = router
+export class BalanceUpdateRoute {
+    private router: Router;
+  
+    constructor() {
+        this.router = Router();
+        this.instantiate();
+    };
+    
+    public instantiate = () => {
+        return this.router;
+    }
+}

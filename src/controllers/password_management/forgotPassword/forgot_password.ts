@@ -1,7 +1,5 @@
-// IMPORT DEPENDENCIES
 import { config } from 'dotenv'
 import { Request, Response } from 'express'
-import bcrypt from 'bcrypt'
 import { ReasonPhrases, StatusCodes } from 'http-status-codes'
 import { User } from '../../../models/User' 
 import { VerifyResetEmailAndSendOtp } from './verify_send_password_reset_otp'
