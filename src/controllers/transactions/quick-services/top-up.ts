@@ -20,8 +20,8 @@ export class TopUpService {
     };
 
    public airtime = async (req: Request, res: Response) => {
-        // const authHeader = req.headers.authorization as string;
-        // const userPayload = new Token().decode(authHeader.split(" ")[1]) as JwtPayload;
+        const authHeader = req.headers.authorization as string;
+        const userPayload = new Token().decode(authHeader.split(" ")[1]) as JwtPayload;
         const { phonenumber, network, amount } = req.body;
 
         const url = `${this.vtuBaseUrl}/airtime?username=${this.username}&password=${this.password}&phone=${phonenumber}&network_id=${network}&amount=${amount}`;
@@ -80,15 +80,3 @@ export class TopUpService {
         } 
     };
 };
-
-//  const data = {
-//     code: "success",
-//     message:"Data successfully delivered",
-//     data: {
-//         network: "MTN",
-//         data_plan: "MTN Data 1GB (SME) – 30 Days",
-//         phone: "07045461790",
-//         amount: "NGN259",
-//         order_id: "2443"
-//     }
-// }
