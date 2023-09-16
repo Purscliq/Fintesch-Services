@@ -90,34 +90,3 @@ export class PayBill {
         } 
     };
 };
-
- // @josh_dev30
-
-//     const data = {
-//         code:"success",
-//         message:"Electricity bill successfully paid",
-//         data: {
-//             electricity: "Ikeja (IKEDC)",
-//             meter_number: "62418234034",
-//             token: "Token: 5345 8765 3456 3456 1232",
-//             units: "47.79kwH","phone":"07045461790",
-//             amount: "NGN3000",
-//             amount_charged: "NGN2970",
-//             order_id:"4324"
-//         }
-//     }
-
-//     const datas = {
-//         "code":"success",
-//         "message":"Cable TV subscription successfully delivered",
-//         "data": {
-//             "cable_tv":"GOtv",
-//             "subscription_plan": "GOtv Max",
-//             "smartcard_number": "7032400086",
-//             "phone":"07045461790",
-//             "amount":"NGN3280",
-//             "amount_charged": "NGN3247.2",
-//             "service_fee": "NGN0.00",
-//             "order_id": "2876"
-//     }
-// }
