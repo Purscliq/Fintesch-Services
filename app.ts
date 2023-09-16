@@ -2,7 +2,7 @@ import { config } from 'dotenv';
 import express, { json, urlencoded, Application } from 'express';
 import cors from 'cors';
 
-import { connectToDatabase } from './config/connect';
+import { Db } from './config/connect';
 import { AppRoutes } from './src/routes/appRoutes';
 
 config();
@@ -20,9 +20,9 @@ export class App {
         this.app.use(new AppRoutes().mount());
     }
 
-    public start = async () => {
+    public start = async() => {
         try {
-            await connectToDatabase();
+            await new Db().connectToDatabase();
             this.app.listen(this.port, () => console.log(`Server is running on port ${this.port}`));
         } catch (error: any) { 
             console.error(error.message);

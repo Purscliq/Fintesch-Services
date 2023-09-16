@@ -29,9 +29,9 @@ class VerifyResetEmailAndSendOtp {
         };
         this.domain = process.env.DOMAIN;
         this.key = process.env.api_key;
-        this.OTP = new generate_otp_1.GenerateOTP;
-        this.mailText = `<h3> You requested to reset your password. Here's your One-time Password: 
-        ${this.OTP}. If this isn't you, kindly ignore this mail./p>`;
+        this.OTP = new generate_otp_1.GenerateOTP().instantiate();
+        this.mailText = `<p> You requested to reset your password. Here's your One-time Password: 
+        ${this.OTP}. If this isn't you, kindly ignore this mail.</p>`;
     }
 }
 exports.VerifyResetEmailAndSendOtp = VerifyResetEmailAndSendOtp;

@@ -8,15 +8,15 @@ config();
 export class VerifyResetEmailAndSendOtp {
     private domain: string;
     private key: string;
-    private OTP: GenerateOTP;
+    private OTP: number;
     private mailText: string;
 
     constructor() {
         this.domain =  process.env.DOMAIN as string;
         this.key = process.env.api_key as string;
-        this.OTP = new GenerateOTP;
-        this.mailText = `<h3> You requested to reset your password. Here's your One-time Password: 
-        ${this.OTP}. If this isn't you, kindly ignore this mail./p>`;
+        this.OTP = new GenerateOTP().instantiate();
+        this.mailText = `<p> You requested to reset your password. Here's your One-time Password: 
+        ${this.OTP}. If this isn't you, kindly ignore this mail.</p>`;
     }
     
     public verifyAndSend = async (email: string) => {

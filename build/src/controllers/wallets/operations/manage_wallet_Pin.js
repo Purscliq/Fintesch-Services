@@ -19,12 +19,12 @@ class TransactionPin {
                 wallet.PIN = Number(PIN);
                 await wallet.save();
                 return res.status(http_status_codes_1.StatusCodes.OK).json({
-                    Success: "PIN has been successfully set",
-                    PIN: wallet.PIN,
+                    Success: "PIN has been successfully set!"
                 });
             }
             catch (error) {
                 console.error(error);
+                return res.status(http_status_codes_1.StatusCodes.INTERNAL_SERVER_ERROR).json(error.message);
             }
         };
         this.changePin = async (req, res) => {
@@ -47,7 +47,7 @@ class TransactionPin {
             }
             catch (error) {
                 console.error(error);
-                res.status(http_status_codes_1.StatusCodes.INTERNAL_SERVER_ERROR).json(error.message);
+                return res.status(http_status_codes_1.StatusCodes.INTERNAL_SERVER_ERROR).json(error.message);
             }
         };
         this.token = new token_service_1.Token;

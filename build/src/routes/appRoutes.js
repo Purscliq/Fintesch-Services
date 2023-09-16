@@ -3,8 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.AppRoutes = void 0;
 const express_1 = require("express");
 const auth_route_1 = require("./clientRoute/auth_route");
-const forgot_password_route_1 = require("./clientRoute/forgot_password_route");
-const change_password_route_1 = require("./clientRoute/change_password_route");
+const password_route_1 = require("./clientRoute/password_route");
 const profile_management_route_1 = require("./clientRoute/profile_management_route");
 const wallet_management_route_1 = require("./clientRoute/wallet_management_route");
 const transaction_route_1 = require("./clientRoute/transaction_route");
@@ -22,8 +21,7 @@ class AppRoutes {
         this.mount = () => {
             this.router.use("/api", authenticate_1.verifyToken);
             this.router.use("/auth", new auth_route_1.AuthRoutes().instantiate());
-            this.router.use("/pwd/reset", new forgot_password_route_1.ForgotPasswordRoute().instantiate);
-            this.router.use("/api/pwd/reset", new change_password_route_1.UpdatePasswordRoute().instantiate);
+            this.router.use("/password/reset", new password_route_1.PasswordRoute().instantiate);
             this.router.use("/api/profile", new profile_management_route_1.ProfileManagementRoute().instantiate);
             this.router.use("/api/kyc", new kyc_verification_route_1.KycRoute().instantiate);
             this.router.use("/api/wallet", new wallet_management_route_1.WalletRoutes().instantiate);

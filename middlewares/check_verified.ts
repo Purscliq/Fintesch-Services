@@ -9,7 +9,7 @@ export class CheckStatus {
             const authHeader = req.headers.authorization as string;
             const user = new Token().decode(authHeader.split(" ")[1]) as JwtPayload;
             
-            (user.status) ? next() : res.status(StatusCodes.FORBIDDEN).json(
+            user.status ? next() : res.status(StatusCodes.FORBIDDEN).json(
                 { 
                   message: "You are not verified yet" 
                 }

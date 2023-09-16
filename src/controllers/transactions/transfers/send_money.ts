@@ -6,12 +6,11 @@ import { Transaction } from '../../../models/Transaction';
 import { Wallet } from '../../../models/Wallet';
 import { Token } from '../../users/utils/token_service'
 import { JwtPayload } from 'jsonwebtoken';
-import { HeaderType } from '../../../types_interfaces';
 
 config();
 
 export class SendMoneyService {
-    private headers: HeaderType;
+    private headers;
     private budKey: string;
     private budBaseUrl: string;
     private token: Token;

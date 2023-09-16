@@ -1,8 +1,7 @@
 import { Router } from "express";
 
 import { AuthRoutes } from './clientRoute/auth_route';
-import { ForgotPasswordRoute } from './clientRoute/forgot_password_route';
-import { UpdatePasswordRoute } from './clientRoute/change_password_route';
+import { PasswordRoute } from './clientRoute/password_route';
 import { ProfileManagementRoute } from './clientRoute/profile_management_route';
 import { WalletRoutes } from './clientRoute/wallet_management_route';
 import { TransactionsRoute } from './clientRoute/transaction_route';
@@ -27,8 +26,7 @@ export class AppRoutes {
     public mount = () => {
         this.router.use("/api", verifyToken);
         this.router.use("/auth", new AuthRoutes().instantiate());
-        this.router.use("/pwd/reset", new ForgotPasswordRoute().instantiate);
-        this.router.use("/api/pwd/reset", new UpdatePasswordRoute().instantiate);
+        this.router.use("/password/reset", new PasswordRoute().instantiate);
         this.router.use("/api/profile", new ProfileManagementRoute().instantiate);
         this.router.use("/api/kyc", new KycRoute().instantiate);
         this.router.use("/api/wallet", new WalletRoutes().instantiate);

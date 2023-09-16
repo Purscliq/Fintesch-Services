@@ -40,7 +40,7 @@ class Wallets {
             }
             catch (error) {
                 console.log(error);
-                throw error;
+                res.status(http_status_codes_1.StatusCodes.INTERNAL_SERVER_ERROR).json(error.message);
             }
         };
         this.createWallet = async (req, res) => {
@@ -51,12 +51,10 @@ class Wallets {
             try {
                 const response = await axios_1.default.post(virtualAccountEndPoint, { customer: customerCode }, { headers: this.headers });
                 const info = response.data;
-                if (!info || info.status !== true) {
+                if (!info || info.status !== true)
                     return res.status(http_status_codes_1.StatusCodes.BAD_REQUEST).json({
                         error: "Transaction Failed"
                     });
-                }
-                // account model payload
                 const accountData = {
                     user: userPayload.userId,
                     id: info.data.id,
@@ -72,10 +70,12 @@ class Wallets {
                     updated_at: info.data.updated_at,
                     domain: info.data.domain,
                 };
-                // store account details to customer database
                 const wallet = new Wallet_1.Wallet(accountData);
                 await wallet.save();
-                return res.status(http_status_codes_1.StatusCodes.OK).json({});
+                return res.status(http_status_codes_1.StatusCodes.OK).json({
+                    message: "Wallet creation successful",
+                    wallet: info.data
+                });
             }
             catch (error) {
                 console.error(error);
@@ -90,5 +90,6 @@ class Wallets {
         };
         this.token = new token_service_1.Token;
     }
+    ;
 }
 exports.Wallets = Wallets;

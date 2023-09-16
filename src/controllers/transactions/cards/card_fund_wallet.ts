@@ -5,7 +5,6 @@ import axios from 'axios';
 import { StatusCodes } from 'http-status-codes';
 import { RefGenerator } from '../../utils/generate_ref';
 import { Token } from '../../users/utils/token_service';
-import { HeaderType } from '../../../types_interfaces';
 
 config();
 
@@ -14,7 +13,7 @@ export class FundWalletService {
     private reference: string;
     private budBaseUrl: string;
     private budKey: string;
-    private headers: HeaderType;
+    private headers;
     private token: Token;
 
     constructor() {

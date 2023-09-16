@@ -1,5 +1,5 @@
 import { config } from 'dotenv'
-import jwt, { JwtPayload } from 'jsonwebtoken';
+import { sign, verify, JwtPayload } from 'jsonwebtoken';
 
 config();
 
@@ -16,10 +16,10 @@ export class Token {
         try {
             if( !this.secret ) throw new Error('Token key is undefined');
                 
-            return jwt.sign(payload, this.secret, { expiresIn: "1d"});
+            return sign(payload, this.secret, { expiresIn: "1d"});
 
         } catch (error: any) {
-            console.error(error);
+            return console.error(error);
          } 
     }
 
@@ -27,14 +27,14 @@ export class Token {
         try {
             if( !this.secret ) throw new Error("Cannot access token key");
             
-            const tokenPayload = jwt.verify( token, this.secret ) as JwtPayload;
+            const tokenPayload = verify( token, this.secret ) as JwtPayload;
     
             if( !tokenPayload ) throw new Error("Token could not be decoded.");
 
             return tokenPayload;
     
         } catch (error: any) {
-           console.error(error)
+          return console.error(error);
         }   
     }
 }

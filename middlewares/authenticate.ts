@@ -6,16 +6,17 @@ import { StatusCodes } from 'http-status-codes'
 config();
 
 export const verifyToken = async (req: Request, res: Response, next: NextFunction) => {
-    const secret = process.env.secretKey;
     const authHeader = req.headers.authorization as string;
     const token = authHeader.split(" ")[1];
+
+    const secret = process.env.secretKey;
 
     try {
         if(!secret) return res.status(StatusCodes.UNAUTHORIZED).json("Provide secret authentication key.");
 
         if(!token) return res.status(StatusCodes.UNAUTHORIZED).json("Authentication token not detected");
         
-       const decodedToken = jwt.verify(token, secret) as JwtPayload;
+        const decodedToken = jwt.verify(token, secret) as JwtPayload;
        
         if(!decodedToken) return res.status(StatusCodes.UNAUTHORIZED).json("Token verification failed!");
 
@@ -23,5 +24,6 @@ export const verifyToken = async (req: Request, res: Response, next: NextFunctio
     } 
     catch( err: any ) {
         console.error(err);
+        return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(err.message);
     }
 }

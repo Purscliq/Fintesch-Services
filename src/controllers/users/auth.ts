@@ -1,11 +1,12 @@
 import { config } from 'dotenv';
-import {Request, Response} from 'express';
+import { Request, Response } from 'express';
 import { User } from '../../models/User';
-import {StatusCodes, ReasonPhrases} from 'http-status-codes';
-import bcrypt from 'bcrypt';
+import { StatusCodes, ReasonPhrases } from 'http-status-codes';
 import { GenerateOTP } from '../utils/generate_otp';
 import { SendMail } from '../utils/send_mail';
 import { Token } from './utils/token_service';
+import cron from 'node-cron';
+import bcrypt from 'bcrypt';
 
 config();
 
@@ -14,13 +15,13 @@ export class Auth {
     private key: string;
     private token: Token;
     private OTP: number;
-    private mailText: string;
+    private text: string;
 
     constructor() {
-        this.domain = process.env.DOMAIN as string;
-        this.key = process.env.mailgun_key as string; 
+        this.domain = <string>process.env.DOMAIN;
+        this.key = <string>process.env.mailgun_key; 
         this.OTP = new GenerateOTP().instantiate();
-        this.mailText =`<p> Welcome to e-Tranzact. Your One-Time password for your e-Tranzact account is ${this.OTP}. Password is valid for 20 minutes.</p>`;
+        this.text =`<p> Welcome to e-Tranzact. Your One-Time password for your e-Tranzact account is ${this.OTP}. Password is valid for 20 minutes.</p>`;
         this.token = new Token;
     }
 
@@ -35,36 +36,34 @@ export class Auth {
 
             const securePassword = await bcrypt.hash(password, bcrypt.genSaltSync(10));
 
-            const user = new User(
-                { 
+            const user = new User ({ 
                     email, 
                     password: securePassword 
-                }
-            );
+                });
 
             user.OTP = this.OTP;
+
             await user.save();
             
             const messageData = {
                 from: 'e-Tranzact <jon@gmail.com>',
                 to: email,
                 subject: 'Verify Your Account',
-                html: this.mailText
-            }
+                html: this.text
+            };
 
            SendMail.send(this.domain, this.key, messageData);
 
             const noOfUsers = await User.countDocuments({});
 
-            if ( noOfUsers === 0 ) {
-                user.role = "Admin"
+            if( noOfUsers === 0 ) {
+                user.role = "Admin";
                 await user.save();
-            }
+            };
 
             return res.status(StatusCodes.OK).json(
                 { 
-                    Success: "USER PROFILE CREATED SUCCESSFULLY!", 
-                    message: "A One-Time Password has been sent to your mail"
+                    Success: "User profile created successfully! A One-Time Password has been sent to your mail"
                 }
             );
         } catch (error: any) {
@@ -118,7 +117,7 @@ export class Auth {
                 return req.headers.authorization = undefined;
             } catch (error) {
                 console.error(error)
-                return res.status(StatusCodes.BAD_REQUEST).json(ReasonPhrases.BAD_REQUEST)
+                return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: 'Internal server error' });
             }
         }
     }

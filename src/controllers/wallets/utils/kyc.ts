@@ -7,14 +7,13 @@ import { JwtPayload } from "jsonwebtoken";
 import { ReasonPhrases, StatusCodes } from "http-status-codes";
 import { SendSMS } from '../../utils/send_sms';
 import { GenerateOTP } from '../../utils/generate_otp';
-import { HeaderType} from '../../../types_interfaces';
 
 config();
 
 export class KnowYourCustomer {
     private kycBaseUrl: string;
     private liveKey: string;
-    private headers: HeaderType;
+    private headers;
     private OTP: number;
     private token: Token;
 

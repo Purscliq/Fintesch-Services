@@ -1,4 +1,3 @@
-//IMPORT DEPENDENCIES
 import { config } from 'dotenv';
 import { Request, Response } from 'express';
 import { User } from "../../models/User";
@@ -18,11 +17,13 @@ export class Profile {
     public viewProfile = async (req: Request, res: Response) => {
         try {
             const authHeader = req.headers.authorization as string;
-            const data = this.token.decode(authHeader.split(" ")[1]) as JwtPayload;
+            const userPayload = this.token.decode(authHeader.split(" ")[1]) as JwtPayload;
+
+            if (!userPayload.userId) return res.status(StatusCodes.UNAUTHORIZED).json("Unauthorized");
 
             const myProfile = await User.findOne(
                 { 
-                    _id: data.userId 
+                    _id: userPayload.userId 
                 }
             );
 
@@ -34,19 +35,21 @@ export class Profile {
         }
     }
 
-    public updateProfile = async (req: Request, res: Response) =>{
+    public updateProfile = async (req: Request, res: Response) => {
         try {
             const authHeader = req.headers.authorization as string;
-            const data = this.token.decode(authHeader.split(" ")[1]) as JwtPayload;
+            const userPayload = this.token.decode(authHeader.split(" ")[1]) as JwtPayload;
+
+            if (!userPayload.userId) return res.status(StatusCodes.UNAUTHORIZED).json("Unauthorized");
             
-            const updatedProfile = await User.findOneAndUpdate({ _id: data.userId }, req.body,
+            const updatedProfile = await User.findOneAndUpdate({ _id: userPayload.userId }, req.body,
                 { 
                     new: true, 
                     runValidators: true
                 }
             );
 
-            if(!updatedProfile) return res.send("Error occurred: cannot update profile");
+            if(!updatedProfile) return res.status(StatusCodes.BAD_REQUEST).json("error occurred: could not update profile");
 
             const token = this.token.create(
                     updatedProfile.email, 
@@ -59,7 +62,7 @@ export class Profile {
 
         } catch (error: any) {
             console.error(error);
-            return res.status(400).json(error.message);
+            return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error.message);
         }
     }
 
@@ -67,17 +70,19 @@ export class Profile {
     public deleteProfile = async (req: Request, res: Response) => {
         try {
             const authHeader = req.headers.authorization as string;
-            const data = this.token.decode(authHeader.split(" ")[1]) as JwtPayload;
+            const userPayload = this.token.decode(authHeader.split(" ")[1]) as JwtPayload;
 
-            await User.findOneAndDelete({ _id: data.userId });
+            if (!userPayload.userId) return res.status(StatusCodes.UNAUTHORIZED).json("Unauthorized");
 
-            return res.status(200).json({ 
-                Success: "Your account has been deleted" 
+            await User.findOneAndDelete({ _id: userPayload.userId });
+
+            return res.status(StatusCodes.OK).json({ 
+                Success: "Your account has been deleted succesfully" 
             });
 
         } catch (error: any) {
             console.error(error);
-            return res.status(400).json(error.message);
+            return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error.message);
         }
     }
 }

@@ -1,32 +1,34 @@
+import { connect, disconnect, ConnectOptions } from 'mongoose';
 import { config } from 'dotenv';
-import mongoose from 'mongoose';
 
 if (process.env.NODE_ENV !== 'production') config();
 
-const { MongoURI } = process.env;
+export class Db {
+    private uri: string;
+    private option: ConnectOptions;
 
-if (!MongoURI )
-  throw new Error('MongoDB URI not found in environment variable!');
+    constructor() {
+        this.uri = <string>process.env.MongoURI;
+        this.option = <ConnectOptions>{ useNewUrlParser: true, useUnifiedTopology: true };
+    }
 
-const options: any = {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-};
+    public connectToDatabase = async() => {
+        try {
+          await connect( this.uri, this.option );
+          console.log('Connected to MongoDB!');
+        } catch (error) {
+          console.error('Failed to connect to MongoDB:', error);
+        }
+      };
+      
+    public disconnectFromDatabase = async() => {
+        try {
+          await disconnect();
+          console.log('Disconnected from MongoDB!');
+        } catch (error) {
+            console.error('Failed to disconnect from MongoDB:', error);
+        }
+    };    
+} 
 
-export const connectToDatabase = async () => {
-  try {
-    await mongoose.connect( MongoURI, options );
-    console.log('Connected to MongoDB!');
-  } catch (error) {
-    console.error('Failed to connect to MongoDB:', error);
-  }
-};
 
-export const disconnectFromDatabase = async () => {
-  try {
-    await mongoose.disconnect();
-    console.log('Disconnected from MongoDB!');
-  } catch (error) {
-    console.error('Failed to disconnect from MongoDB:', error);
-  }
-};

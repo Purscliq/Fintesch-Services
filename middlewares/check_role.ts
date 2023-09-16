@@ -15,7 +15,7 @@ export class CheckRole {
               const authHeader = req.headers.authorization as string;
               const user = new Token().decode(authHeader.split(" ")[1]) as JwtPayload;
               
-              (user.role === this.role) ? next() : res.status(StatusCodes.FORBIDDEN).json(
+              user.role === this.role ? next() : res.status(StatusCodes.FORBIDDEN).json(
                   { 
                     message: `${(this.role).toUpperCase} ONLY! You are not authorized to perform this action.` 
                   }

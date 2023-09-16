@@ -5,15 +5,14 @@ import { JwtPayload } from "jsonwebtoken";
 import { StatusCodes } from "http-status-codes";
 import { Token } from "../users/utils/token_service";
 import { KYC } from "../../models/KYC";
-import { Wallet } from "../../models/Wallet";;
-import { HeaderType } from "../../types_interfaces";
+import { Wallet } from "../../models/Wallet";
 
 config();
 
 export class Wallets {
   private budBaseUrl: string;
   private budKey: string;
-  private headers: HeaderType
+  private headers;
   private token: Token;
 
   constructor() {

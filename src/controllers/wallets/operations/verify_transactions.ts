@@ -1,12 +1,11 @@
 import { config } from "dotenv";
 import axios from "axios";
-import { HeaderType } from "../../../types_interfaces";
 
 config();
 
 export class VerifyTransactions {
     private budKey: string;
-    private headers: HeaderType
+    private headers;
 
     constructor() {
         this.budKey = process.env.bud_key as string;

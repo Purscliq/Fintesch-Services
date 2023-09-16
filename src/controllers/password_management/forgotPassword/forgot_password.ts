@@ -7,10 +7,9 @@ import { VerifyResetEmailAndSendOtp } from './verify_send_password_reset_otp'
 config();
 
 export class ForgotPassword {
-    public async getResetOtp(req: Request, res: Response) {
+    public getResetOtp = async (req: Request, res: Response) => {
         try {
           const { email } = req.body;
-
           await new VerifyResetEmailAndSendOtp().verifyAndSend(email);
         } catch (error: any) {
             console.error(error);
@@ -20,30 +19,29 @@ export class ForgotPassword {
 
         
     //  Incomplete.
-    public async resendResetOtp(res: Response, email: string) {
+    public resendResetOtp = async (email: string) => {
         try {
             await new VerifyResetEmailAndSendOtp().verifyAndSend(email);
-
           } catch (error: any) {
               console.error(error);
-              return res.status(StatusCodes.BAD_REQUEST).json(error.message);
+              throw (error.message);
             }
         };
 
   
-    public async verifyResetOtp (req: Request, res: Response){
+    public verifyResetOtp = async (req: Request, res: Response) => {
         const { OTP } = req.body;
-        const user: any = await User.findOne({ OTP });
+        const user: any = await User.findOne({ OTP }).select('OTP');
 
         try {
             if(!OTP || OTP !== user.OTP) 
                 return res.status(StatusCodes.BAD_REQUEST).json(
                     { 
-                        Error: "A valid One-time password is needed" 
+                        error: "A valid One-time password is needed" 
                     }
                 );
 
-            return res.status(StatusCodes.OK).redirect(StatusCodes.PERMANENT_REDIRECT, `/pwd/reset/${user._id}`);
+            return res.status(StatusCodes.OK).redirect(StatusCodes.PERMANENT_REDIRECT, `/password/reset/${user._id}`);
         } catch(error: any) {
             return res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(ReasonPhrases.INTERNAL_SERVER_ERROR);
         }

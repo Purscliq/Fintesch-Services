@@ -12,7 +12,7 @@ config();
 
 export class CardService {
     private sudoKey: string;
-    private headers: object;
+    private headers;
     private token: Token;
     private sudoBaseUrl: string;
 
@@ -67,7 +67,7 @@ export class CardService {
 
     } catch(err: any) {
         console.log(err);
-        return res.status(StatusCodes.INTERNAL_SERVER_ERROR).send("An expected error occurred")
+        return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json("An expected error occurred")
     }
 };
 
